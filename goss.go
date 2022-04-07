@@ -113,21 +113,6 @@ func buildPageInfo(path string, fileInfo fs.FileInfo) (pageInfo, error) {
   return info, nil
 }
 
-func buildOutputDirForFile(path string, prefix string) string {
-  // initial index is just after the prefix - we expect that the first character
-  // we keep will be the path separator
-  m := len(prefix)
-  // last index is the last path separator, less 1 (so we don't keep the separator)
-  n := strings.LastIndex(path, PathSeparatorString)
-  // now create the outputPath
-  outputPath := outputDir + path[m:n]
-  err := os.MkdirAll(outputPath, 0755)
-  if err != nil {
-    log.Fatal(err)
-  }
-  return outputPath
-}
-
 func copyFile(src, target string) {
   input, err := ioutil.ReadFile(src)
   if err != nil {

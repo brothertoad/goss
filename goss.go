@@ -94,7 +94,7 @@ func processPages2() {
     }
     // Need to generate the output path, which mirrors the source path.
     info, _ := buildPageInfo(path, fileInfo)
-    fmt.Printf("Processing page file %s, which is named %s\n", path, fileInfo.Name())
+    fmt.Printf("Page file is %s\n", path)
     b, ferr := ioutil.ReadFile(path)
     checkError(ferr)
     // Clone the layout template, so we don't add have residue from previous pages.
@@ -114,12 +114,8 @@ func buildPageInfo(path string, fileInfo fs.FileInfo) (pageInfo, error) {
   dir, base := filepath.Split(path)
   fmt.Printf("path is %s, dir is %s, base is %s\n", path, dir, base)
   parts := strings.Split(path, string(os.PathSeparator))
-  fmt.Printf("parts of page file: ")
-  fmt.Println(parts)
   // TASK: handle the case where pageDir and/or outputDir has multiple components
   parts[0] = outputDir
-  fmt.Printf("parts of output file before checking base: ")
-  fmt.Println(parts)
   // If the filename is _index.html, change it to index.html.  Otherwise, remove the
   // .html and add a separator followed by index.html.
   if base == "_index.html" {
@@ -132,40 +128,6 @@ func buildPageInfo(path string, fileInfo fs.FileInfo) (pageInfo, error) {
   info.outputPath = filepath.Join(parts...)
   fmt.Printf("Output path is %s\n", info.outputPath)
   return info, nil
-}
-
-func processPages() {
-  // Need to verify directory exists
-  err := filepath.Walk(pageDir,
-    func(path string, fileInfo fs.FileInfo, err error) error {
-      if strings.HasSuffix(fileInfo.Name(), ".html") && !strings.HasPrefix(fileInfo.Name(), "_") {
-        // process the file, and write to output directory, recreating the path
-        pageOutputPath := buildOutputDirForFile(path, pageDir) + PathSeparatorString + fileInfo.Name()
-        fmt.Printf("Found source page file %s, output page is %s\n", path, pageOutputPath)
-        // Read frontmatter and merge with global data
-        // Read page-specific data and merge with frontmatter/global data
-        // Parse template
-        s := []string{path}
-        s = append(s, layouts...)
-        ts, tsErr := template.ParseFiles(s...)
-        if tsErr != nil {
-          log.Fatal(tsErr)
-        }
-        writer, fileError := os.Create(pageOutputPath)
-        if fileError != nil {
-          log.Fatal(fileError)
-        }
-        tsErr = ts.Execute(writer, nil)
-        if tsErr != nil {
-          log.Fatal(tsErr)
-        }
-        writer.Close()
-      }
-      return nil
-    })
-  if err != nil {
-    log.Fatal(err)
-  }
 }
 
 func buildOutputDirForFile(path string, prefix string) string {

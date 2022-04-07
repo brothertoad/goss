@@ -24,8 +24,6 @@ const layoutDir = "layouts"
 const outputDir = "public"
 const cleanOutputDir = true
 
-const PathSeparatorString = string(os.PathSeparator)
-
 var layouts []string
 var layoutTemplate *template.Template
 

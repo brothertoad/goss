@@ -39,7 +39,7 @@ func main() {
 
   // load global data
   // for each page, load it and any page-specific data, and process it
-  processPages2()
+  processPages()
   // copy static files, possibly using an external program, such as rsync or rclone
   // process scss files
 }
@@ -64,7 +64,7 @@ func loadLayouts() {
   fmt.Println(layoutTemplate.DefinedTemplates())
 }
 
-func processPages2() {
+func processPages() {
   // Need to verify pages directory exists
   err := filepath.Walk(pageDir, func(path string, fileInfo fs.FileInfo, err error) error {
     // Ignore non-html files.

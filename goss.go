@@ -35,9 +35,7 @@ func main() {
   // create/clean the output directory, if needed
   createOutputDir()
 
-  // load layouts
   loadLayouts()
-  loadLayouts3()
 
   // load global data
   // for each page, load it and any page-specific data, and process it
@@ -46,7 +44,7 @@ func main() {
   // process scss files
 }
 
-func loadLayouts3() {
+func loadLayouts() {
   // Need to verify layouts directory exists
   layoutTemplate = template.New("")
   err := filepath.Walk(layoutDir, func(path string, fileInfo fs.FileInfo, err error) error {
@@ -64,21 +62,6 @@ func loadLayouts3() {
     log.Fatal(err)
   }
   fmt.Println(layoutTemplate.DefinedTemplates())
-}
-
-func loadLayouts() {
-  // Need to verify directory exists
-  // Need to load files as byte arrays
-  err := filepath.Walk(layoutDir,
-    func(path string, fileInfo fs.FileInfo, err error) error {
-      if strings.HasSuffix(fileInfo.Name(), ".html") {
-        layouts = append(layouts, path)
-      }
-      return nil
-    })
-  if err != nil {
-    log.Fatal(err)
-  }
 }
 
 func processPages2() {

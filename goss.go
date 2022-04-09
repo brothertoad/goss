@@ -5,7 +5,6 @@ import (
   "fmt"
   "strings"
   "path/filepath"
-  "log"
   "io/ioutil"
   "io/fs"
   "html/template"
@@ -22,11 +21,13 @@ type pageInfo struct {
 const pageDir = "pages"
 const staticDir = "static"
 const layoutDir = "layouts"
+const dataDir = "data"
 const outputDir = "public"
 const cleanOutputDir = true
 
 var layouts []string
 var layoutTemplate *template.Template
+var globalData map[string]interface{}
 
 func main() {
   // read config
@@ -36,7 +37,7 @@ func main() {
 
   loadLayouts()
 
-  // load global data
+  globalData = loadGlobalData(dataDir)
   // for each page, load it and any page-specific data, and process it
   processPages()
   // copy static files, possibly using an external program, such as rsync or rclone
@@ -57,9 +58,7 @@ func loadLayouts() {
     checkError(err)
 		return nil
   })
-  if err != nil {
-    log.Fatal(err)
-  }
+  checkError(err)
   fmt.Println(layoutTemplate.DefinedTemplates())
 }
 

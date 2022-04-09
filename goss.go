@@ -31,13 +31,9 @@ var globalData map[string]interface{}
 func main() {
   // read config
 
-  // create/clean the output directory, if needed
   createOutputDir()
-
   loadLayouts()
-
   globalData = loadGlobalData(dataDir)
-  // for each page, load it and any page-specific data, and process it
   processPages(globalData)
   // copy static files, possibly using an external program, such as rsync or rclone
   // process scss files

@@ -25,7 +25,7 @@ func processPages(globalData map[string]interface{}) {
     if strings.HasPrefix(fileInfo.Name(), "_")  && fileInfo.Name() != "_index.html" {
       return nil
     }
-    // Need to generate the output path, which mirrors the source path.
+    
     info := buildPageInfo(path, fileInfo)
     // Clone the layout template, so we don't add have residue from previous pages.
     t, terr := layoutTemplate.Clone()

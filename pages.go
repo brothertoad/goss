@@ -1,12 +1,14 @@
 package main
 
 import (
+  "bytes"
   "fmt"
   "os"
   "strings"
   "io/fs"
   "io/ioutil"
   "path/filepath"
+  "github.com/adrg/frontmatter"
 )
 
 func processPages(globalData map[string]interface{}) {
@@ -22,20 +24,33 @@ func processPages(globalData map[string]interface{}) {
     }
     // Need to generate the output path, which mirrors the source path.
     info := buildPageInfo(path, fileInfo)
-    b, ferr := ioutil.ReadFile(path)
-    checkError(ferr)
     // Clone the layout template, so we don't add have residue from previous pages.
     t, terr := layoutTemplate.Clone()
     checkError(terr)
-    t, terr = t.Parse(string(b))
-    checkError(terr)
-    // Copy the global data, and merge in the frontmatter.
-    var pageData map[string]interface{}
+
+    // Copy the global data, then read and merge the frontmatter.
+    pageData := make(map[string]interface{})
     for k, v := range globalData {
       pageData[k] = v
     }
+    b, ferr := ioutil.ReadFile(path)
+    checkError(ferr)
+    fm := make(map[string]interface{})
+    rest, fmerr := frontmatter.Parse(bytes.NewReader(b), &fm)
+    checkError(fmerr)
+    for k, v := range fm {
+      pageData[k] = v
+    }
+
+    // Task: Need to read in page-specific data, if any.
+
+    // Parse what was left of the page after removing the frontmatter.
+    t, terr = t.Parse(string(rest))
+    checkError(terr)
+
     // Now we can execute the template and write the output.
-    fmt.Printf("Output will be written to %s (may need to create directory)\n", info.outputPath)
+    fmt.Printf("Output will be written to %s\n", info.outputPath)
+    createDirForFile(info.outputPath)
     return nil
   })
   checkError(err)

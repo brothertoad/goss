@@ -11,6 +11,7 @@ import (
   "io/ioutil"
   "path/filepath"
   "github.com/adrg/frontmatter"
+  "gopkg.in/yaml.v3"
 )
 
 func processPages(globalData map[string]interface{}) {
@@ -45,6 +46,15 @@ func processPages(globalData map[string]interface{}) {
     }
 
     // TASK: Need to read in page-specific data, if any.
+    b, ferr = ioutil.ReadFile(info.dataPath)
+    if ferr != nil {
+      pageMap := make(map[string]interface{})
+      yerr := yaml.Unmarshal(b, pageMap)
+      checkError(yerr)
+      for k, v := range pageMap {
+        pageData[k] = v
+      }
+    }
 
     // Parse what was left of the page after removing the frontmatter.
     t, terr = t.Parse(string(rest))

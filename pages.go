@@ -1,8 +1,10 @@
 package main
 
 import (
+  "bufio"
   "bytes"
   "fmt"
+  "log"
   "os"
   "strings"
   "io/fs"
@@ -42,15 +44,27 @@ func processPages(globalData map[string]interface{}) {
       pageData[k] = v
     }
 
-    // Task: Need to read in page-specific data, if any.
+    // TASK: Need to read in page-specific data, if any.
 
     // Parse what was left of the page after removing the frontmatter.
     t, terr = t.Parse(string(rest))
     checkError(terr)
 
+    // Determine the layout
+    if pageData["layout"] == nil {
+      log.Fatalf("No layout specified for page %s\n", path)
+    }
+    layout := fmt.Sprintf("%v", pageData["layout"])
+
     // Now we can execute the template and write the output.
     fmt.Printf("Output will be written to %s\n", info.outputPath)
     createDirForFile(info.outputPath)
+    file, ferr := os.Create(info.outputPath)
+    checkError(nil)
+    defer file.Close()
+    w := bufio.NewWriter(file)
+    t.ExecuteTemplate(w, layout, pageData)
+    w.Flush()
     return nil
   })
   checkError(err)

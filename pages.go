@@ -45,7 +45,7 @@ func processPages(globalData map[string]interface{}) {
       pageData[k] = v
     }
 
-    // TASK: Need to read in page-specific data, if any.
+    // Read in page-specific data, if any.
     b, ferr = ioutil.ReadFile(info.dataPath)
     if ferr != nil {
       pageMap := make(map[string]interface{})

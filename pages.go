@@ -51,10 +51,11 @@ func processPages(globalData map[string]interface{}) {
     checkError(terr)
 
     // Determine the layout
-    if pageData["layout"] == nil {
-      log.Fatalf("No layout specified for page %s\n", path)
+    layoutValue, ok := pageData["layout"]
+    if !ok {
+      log.Fatalf("No layout for page %s\n", path)
     }
-    layout := fmt.Sprintf("%v", pageData["layout"])
+    layout := fmt.Sprintf("%v", layoutValue)
 
     // Now we can execute the template and write the output.
     fmt.Printf("Output will be written to %s\n", info.outputPath)

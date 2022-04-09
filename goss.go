@@ -13,6 +13,7 @@ import (
 
 type pageInfo struct {
   outputPath string
+  dataPath string
 }
 
 // These should be put in a structure and read from a config file.
@@ -75,7 +76,6 @@ func processPages() {
     }
     // Need to generate the output path, which mirrors the source path.
     info, _ := buildPageInfo(path, fileInfo)
-    fmt.Printf("Page file is %s\n", path)
     b, ferr := ioutil.ReadFile(path)
     checkError(ferr)
     // Clone the layout template, so we don't add have residue from previous pages.
@@ -107,36 +107,22 @@ func buildPageInfo(path string, fileInfo fs.FileInfo) (pageInfo, error) {
     parts = append(parts, "index.html")
   }
   info.outputPath = filepath.Join(parts...)
-  fmt.Printf("Output path is %s\n", info.outputPath)
+  info.dataPath = strings.TrimSuffix(path, ".html") + ".yaml"
+  fmt.Printf("Output path is %s, data path is %s\n", info.outputPath, info.dataPath)
   return info, nil
 }
 
 func copyFile(src, target string) {
   input, err := ioutil.ReadFile(src)
-  if err != nil {
-    log.Fatal(err)
-  }
+  checkError(err)
   err = ioutil.WriteFile(target, input, 0644)
-  if err != nil {
-    log.Fatal(err)
-  }
+  checkError(err)
 }
 
 func createOutputDir() {
   if cleanOutputDir {
     err := os.RemoveAll(outputDir)
-    if err != nil {
-      log.Fatal(err)
-    }
+    checkError(err)
   }
-  err := os.MkdirAll(outputDir, 0755)
-  if err != nil {
-    log.Fatal(err)
-  }
-}
-
-func checkError(err error) {
-  if err != nil {
-    log.Fatal(err)
-  }
+  createDir(outputDir)
 }

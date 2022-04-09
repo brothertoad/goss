@@ -9,7 +9,7 @@ import (
   "path/filepath"
 )
 
-func processPages() {
+func processPages(globalData map[string]interface{}) {
   // Need to verify pages directory exists
   err := filepath.Walk(pageDir, func(path string, fileInfo fs.FileInfo, err error) error {
     // Ignore non-html files.
@@ -29,6 +29,11 @@ func processPages() {
     checkError(terr)
     t, terr = t.Parse(string(b))
     checkError(terr)
+    // Copy the global data, and merge in the frontmatter.
+    var pageData map[string]interface{}
+    for k, v := range globalData {
+      pageData[k] = v
+    }
     // Now we can execute the template and write the output.
     fmt.Printf("Output will be written to %s (may need to create directory)\n", info.outputPath)
     return nil

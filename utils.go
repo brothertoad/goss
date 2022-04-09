@@ -16,6 +16,12 @@ func createDirForFile(path string) {
   createDir(dir)
 }
 
+func includeCommand(path string) string {
+  b, err := os.ReadFile(path)
+  checkError(err)
+  return string(b)
+}
+
 func checkError(err error) {
   if err != nil {
     log.Fatal(err)

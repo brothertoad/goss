@@ -41,7 +41,9 @@ func main() {
 
 func loadLayouts() {
   // Need to verify layouts directory exists
-  layoutTemplate = template.New("")
+  layoutTemplate = template.New("").Funcs(template.FuncMap{
+    "include": includeCommand,
+  })
   err := filepath.Walk(layoutDir, func(path string, fileInfo fs.FileInfo, err error) error {
     // Ignore non-html files.
     if filepath.Ext(path) != ".html" {

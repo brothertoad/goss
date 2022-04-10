@@ -28,14 +28,17 @@ var layouts []string
 var layoutTemplate *template.Template
 var globalData map[string]interface{}
 
+var staticCommand = []string{"rsync", "-a", "static/", "public/"}
+var sassCommand = []string{"sass", "--no-source-map", "%input", "%output"}
+
 func main() {
   // read config
 
   createOutputDir()
   loadLayouts()
   globalData = loadGlobalData(dataDir)
-  processPages(globalData)
-  // copy static files, possibly using an external program, such as rsync or rclone
+  processPages(pageDir, globalData)
+  copyStaticFiles(staticDir, outputDir, staticCommand)
   // process scss files
 }
 

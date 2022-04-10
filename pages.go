@@ -14,7 +14,7 @@ import (
   "gopkg.in/yaml.v3"
 )
 
-func processPages(globalData map[string]interface{}) {
+func processPages(pageDir string, globalData map[string]interface{}) {
   dirMustExist(pageDir)
   err := filepath.Walk(pageDir, func(path string, fileInfo fs.FileInfo, err error) error {
     // Ignore non-html files.

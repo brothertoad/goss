@@ -40,7 +40,7 @@ func main() {
 }
 
 func loadLayouts() {
-  // Need to verify layouts directory exists
+  dirMustExist(layoutDir)
   layoutTemplate = template.New("").Funcs(template.FuncMap{
     "include": includeCommand,
   })

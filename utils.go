@@ -6,6 +6,23 @@ import (
   "os"
 )
 
+func dirExists(dir string) bool {
+  fileInfo, err := os.Stat(dir)
+  if err != nil {
+    return false
+  }
+  if !fileInfo.IsDir() {
+    log.Fatal("%s exists, but is not a directory\n", dir)
+  }
+  return true
+}
+
+func dirMustExist(dir string) {
+  if !dirExists(dir) {
+    log.Fatal("%s does not exist\n", dir)
+  }
+}
+
 func createDir(dir string) {
   err := os.MkdirAll(dir, 0755)
   checkError(err)

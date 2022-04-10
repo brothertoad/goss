@@ -15,7 +15,7 @@ import (
 )
 
 func processPages(globalData map[string]interface{}) {
-  // Need to verify pages directory exists
+  dirMustExist(pageDir)
   err := filepath.Walk(pageDir, func(path string, fileInfo fs.FileInfo, err error) error {
     // Ignore non-html files.
     if filepath.Ext(path) != ".html" {
@@ -25,7 +25,7 @@ func processPages(globalData map[string]interface{}) {
     if strings.HasPrefix(fileInfo.Name(), "_")  && fileInfo.Name() != "_index.html" {
       return nil
     }
-    
+
     info := buildPageInfo(path, fileInfo)
     // Clone the layout template, so we don't add have residue from previous pages.
     t, terr := layoutTemplate.Clone()

@@ -2,7 +2,6 @@ package main
 
 import (
   "os"
-  "fmt"
   "path/filepath"
   "io/ioutil"
   "io/fs"
@@ -15,7 +14,7 @@ type pageInfo struct {
 }
 
 // These should be put in a structure and read from a config file.
-// Probably need to add logic to handle the case where one or more of these
+// TASK: Need to add logic to handle the case where one or more of these
 // consists for multiple levels (i.e., dir1/dir2).
 const pageDir = "pages"
 const staticDir = "static"
@@ -33,8 +32,7 @@ var staticCommands = []string{"rsync", "-a", "static/", "public/"}
 var sassCommands = []string{"sass", "--no-source-map", "sass:public"}
 
 func main() {
-  // read config
-
+  // TASK: read config
   createOutputDir()
   loadLayouts()
   globalData = loadGlobalData(dataDir)
@@ -60,7 +58,6 @@ func loadLayouts() {
 		return nil
   })
   checkError(err)
-  fmt.Println(layoutTemplate.DefinedTemplates())
 }
 
 func copyFile(src, target string) {

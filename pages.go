@@ -68,7 +68,6 @@ func processPages(pageDir string, globalData map[string]interface{}) {
     layout := fmt.Sprintf("%v", layoutValue)
 
     // Now we can execute the template and write the output.
-    fmt.Printf("Output will be written to %s\n", info.outputPath)
     createDirForFile(info.outputPath)
     file, ferr := os.Create(info.outputPath)
     checkError(nil)
@@ -83,8 +82,7 @@ func processPages(pageDir string, globalData map[string]interface{}) {
 
 func buildPageInfo(path string, fileInfo fs.FileInfo) pageInfo {
   var info pageInfo
-  dir, base := filepath.Split(path)
-  fmt.Printf("path is %s, dir is %s, base is %s\n", path, dir, base)
+  _, base := filepath.Split(path)
   parts := strings.Split(path, string(os.PathSeparator))
   // TASK: handle the case where pageDir and/or outputDir has multiple components
   parts[0] = outputDir
@@ -99,6 +97,5 @@ func buildPageInfo(path string, fileInfo fs.FileInfo) pageInfo {
   }
   info.outputPath = filepath.Join(parts...)
   info.dataPath = strings.TrimSuffix(path, ".html") + ".yaml"
-  fmt.Printf("Output path is %s, data path is %s\n", info.outputPath, info.dataPath)
   return info
 }

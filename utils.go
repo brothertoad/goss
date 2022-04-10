@@ -4,6 +4,7 @@ import (
   "path/filepath"
   "log"
   "os"
+  "os/exec"
 )
 
 func dirExists(dir string) bool {
@@ -33,7 +34,16 @@ func createDirForFile(path string) {
   createDir(dir)
 }
 
-func includeCommand(path string) string {
+func executeCommands(inputDir string, cmds []string) {
+  if !dirExists(inputDir) {
+    return
+  }
+  command := exec.Command(cmds[0], cmds[1:]...)
+  err := command.Run()
+  checkError(err)
+}
+
+func includeAction(path string) string {
   b, err := os.ReadFile(path)
   checkError(err)
   return string(b)

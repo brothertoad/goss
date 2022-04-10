@@ -19,6 +19,7 @@ type pageInfo struct {
 // consists for multiple levels (i.e., dir1/dir2).
 const pageDir = "pages"
 const staticDir = "static"
+const sassDir = "sass"
 const layoutDir = "layouts"
 const dataDir = "data"
 const outputDir = "public"
@@ -28,8 +29,8 @@ var layouts []string
 var layoutTemplate *template.Template
 var globalData map[string]interface{}
 
-var staticCommand = []string{"rsync", "-a", "static/", "public/"}
-var sassCommand = []string{"sass", "--no-source-map", "%input", "%output"}
+var staticCommands = []string{"rsync", "-a", "static/", "public/"}
+var sassCommands = []string{"sass", "--no-source-map", "sass:public"}
 
 func main() {
   // read config
@@ -38,14 +39,14 @@ func main() {
   loadLayouts()
   globalData = loadGlobalData(dataDir)
   processPages(pageDir, globalData)
-  copyStaticFiles(staticDir, outputDir, staticCommand)
-  // process scss files
+  executeCommands(staticDir, staticCommands)
+  executeCommands(sassDir, sassCommands)
 }
 
 func loadLayouts() {
   dirMustExist(layoutDir)
   layoutTemplate = template.New("").Funcs(template.FuncMap{
-    "include": includeCommand,
+    "include": includeAction,
   })
   err := filepath.Walk(layoutDir, func(path string, fileInfo fs.FileInfo, err error) error {
     // Ignore non-html files.

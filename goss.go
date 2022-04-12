@@ -33,15 +33,11 @@ var globalData map[string]interface{}
 func main() {
   // TASK: read config
   createOutputDir()
-  if fileExists(preCommand) {
-    executeCommand(preCommand)
-  }
+  executeCommand(preCommand)
   loadLayouts()
   globalData = loadGlobalData(dataDir)
   processPages(pageDir, globalData)
-  if fileExists(postCommand) {
-    executeCommand(postCommand)
-  }
+  executeCommand(postCommand)
 }
 
 func loadLayouts() {

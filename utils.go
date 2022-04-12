@@ -3,7 +3,6 @@ package main
 import (
   "log"
   "os"
-  "os/exec"
   "path/filepath"
 )
 
@@ -43,32 +42,6 @@ func createDir(dir string) {
 func createDirForFile(path string) {
   dir, _ := filepath.Split(path)
   createDir(dir)
-}
-
-func executeCommand(cmd interface{}) {
-  // cmd can be either a string or a slice of strings
-  var command *exec.Cmd
-  switch cmd.(type) {
-  case string:
-    // command = exec.Command(fmt.Sprintf("%v", cmd))
-    command = exec.Command(cmd.(string))
-  case []string:
-    cmds := cmd.([]string)
-    command = exec.Command(cmds[0], cmds[1:]...)
-  default:
-    log.Fatalf("don't know how to handle command type\n")
-  }
-  err := command.Run()
-  checkError(err)
-}
-
-func executeCommands(inputDir string, cmds []string) {
-  if !dirExists(inputDir) {
-    return
-  }
-  command := exec.Command(cmds[0], cmds[1:]...)
-  err := command.Run()
-  checkError(err)
 }
 
 func includeAction(path string) string {

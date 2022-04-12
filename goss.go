@@ -23,6 +23,8 @@ const layoutDir = "layouts"
 const dataDir = "data"
 const outputDir = "public"
 const cleanOutputDir = true
+const preCommand = "./pre.sh"
+const postCommand = "./post.sh"
 
 var layouts []string
 var layoutTemplate *template.Template
@@ -34,11 +36,15 @@ var sassCommands = []string{"sass", "--no-source-map", "sass:public"}
 func main() {
   // TASK: read config
   createOutputDir()
+  if fileExists(preCommand) {
+    executeCommand(preCommand)
+  }
   loadLayouts()
   globalData = loadGlobalData(dataDir)
   processPages(pageDir, globalData)
-  executeCommands(staticDir, staticCommands)
-  executeCommands(sassDir, sassCommands)
+  if fileExists(postCommand) {
+    executeCommand(postCommand)
+  }
 }
 
 func loadLayouts() {

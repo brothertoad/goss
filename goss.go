@@ -30,9 +30,6 @@ var layouts []string
 var layoutTemplate *template.Template
 var globalData map[string]interface{}
 
-// var staticCommands = []string{"rsync", "-a", "static/", "public/"}
-// var sassCommands = []string{"sass", "--no-source-map", "sass:public"}
-
 func main() {
   // TASK: read config
   createOutputDir()

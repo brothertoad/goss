@@ -7,8 +7,8 @@ very powerful, but is a Node application, and after a while dealing with dependa
 not documented yet, but there is a [sample project](https://github.com/brothertoad/uulists) here on github that you can look at and/or clone if you
 want to see how goss works.
 
-To install goss, just clone to a local directory, go into that directory, and type go get followed by go install.  You will need to have the Go
+To install goss, just clone to a local directory, go into that directory, and type `go get` followed by `go install`.  You will need to have the Go
 compiler installed.
 
-To create a web site, go into the directory where the source files for your site are and simply type goss.  You can optionally supply a config file
+To create a web site, go into the directory where the source files for your site are and simply type `goss`.  You can optionally supply a config file
 (defaults to goss.yaml).

@@ -24,8 +24,10 @@ func executeCommand(cmd interface{}) {
     log.Fatalf("don't know how to handle command type %s\n", reflect.TypeOf(cmd))
   }
   if exe != "" {
+    _, err := exec.LookPath(exe)
+    checkError(err)
     command := exec.Command(exe, args...)
-    err := command.Run()
+    err = command.Run()
     checkError(err)
   }
 }

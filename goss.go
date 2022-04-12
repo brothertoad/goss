@@ -8,39 +8,28 @@ import (
   "html/template"
 )
 
-type pageInfo struct {
-  outputPath string
-  dataPath string
-}
-
-// These should be put in a structure and read from a config file.
-// TASK: Need to add logic to handle the case where one or more of these
+// TASK: Need to add logic to handle the case where one or more of the directories
 // consists for multiple levels (i.e., dir1/dir2).
-const pageDir = "pages"
-const staticDir = "static"
-const sassDir = "sass"
-const layoutDir = "layouts"
-const dataDir = "data"
-const outputDir = "public"
-const cleanOutputDir = true
-const preCommand = "./pre.sh"
-const postCommand = "./post.sh"
 
+var config gossConfig
 var layouts []string
 var layoutTemplate *template.Template
 var globalData map[string]interface{}
 
 func main() {
-  // TASK: read config
-  createOutputDir()
-  executeCommand(preCommand)
-  loadLayouts()
-  globalData = loadGlobalData(dataDir)
-  processPages(pageDir, globalData)
-  executeCommand(postCommand)
+  initConfig(&config)
+  if len(os.Args) > 1 {
+    loadConfig(&config, os.Args[1], true)
+  }
+  createOutputDir(config.OutputDir, config.Clean)
+  executeCommand(config.Pre)
+  loadLayouts(config.LayoutDir)
+  globalData = loadGlobalData(config.DataDir)
+  processPages(config.PageDir, config.OutputDir, globalData)
+  executeCommand(config.Post)
 }
 
-func loadLayouts() {
+func loadLayouts(layoutDir string) {
   dirMustExist(layoutDir)
   layoutTemplate = template.New("").Funcs(template.FuncMap{
     "include": includeAction,
@@ -66,8 +55,8 @@ func copyFile(src, target string) {
   checkError(err)
 }
 
-func createOutputDir() {
-  if cleanOutputDir {
+func createOutputDir(outputDir string, clean bool) {
+  if clean {
     err := os.RemoveAll(outputDir)
     checkError(err)
   }

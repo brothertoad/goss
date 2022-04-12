@@ -14,7 +14,12 @@ import (
   "gopkg.in/yaml.v3"
 )
 
-func processPages(pageDir string, globalData map[string]interface{}) {
+type pageInfo struct {
+  outputPath string
+  dataPath string
+}
+
+func processPages(pageDir string, outputDir string, globalData map[string]interface{}) {
   dirMustExist(pageDir)
   err := filepath.Walk(pageDir, func(path string, fileInfo fs.FileInfo, err error) error {
     // Ignore non-html files.
@@ -26,7 +31,7 @@ func processPages(pageDir string, globalData map[string]interface{}) {
       return nil
     }
 
-    info := buildPageInfo(path, fileInfo)
+    info := buildPageInfo(path, outputDir, fileInfo)
     // Clone the layout template, so we don't add have residue from previous pages.
     t, terr := layoutTemplate.Clone()
     checkError(terr)
@@ -80,7 +85,7 @@ func processPages(pageDir string, globalData map[string]interface{}) {
   checkError(err)
 }
 
-func buildPageInfo(path string, fileInfo fs.FileInfo) pageInfo {
+func buildPageInfo(path string, outputDir string, fileInfo fs.FileInfo) pageInfo {
   var info pageInfo
   _, base := filepath.Split(path)
   parts := strings.Split(path, string(os.PathSeparator))

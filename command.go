@@ -2,12 +2,13 @@ package main
 
 import (
   "log"
+  "os"
   "os/exec"
   "reflect"
 )
 
 func executeCommand(cmd interface{}) {
-  // cmd can be either a string or a slice of strings
+  // cmd can be either a string or a slice of interfaces, which we can typecast to strings
   // if it is a slice, break out the first so we can verify it is on the path
   var exe string
   var args []string
@@ -15,8 +16,12 @@ func executeCommand(cmd interface{}) {
   case string:
     exe = cmd.(string)
     args = make([]string, 0)
-  case []string:
-    cmds := cmd.([]string)
+  case []interface{}:
+    icmds := cmd.([]interface{})
+    cmds := make([]string, len(icmds))
+    for n, v := range icmds {
+      cmds[n] = v.(string)
+    }
     exe = cmds[0]
     args = cmds[1:]
   default:
@@ -26,6 +31,7 @@ func executeCommand(cmd interface{}) {
     _, err := exec.LookPath(exe)
     checkError(err)
     command := exec.Command(exe, args...)
+    command.Stdout = os.Stdout
     err = command.Run()
     checkError(err)
   }

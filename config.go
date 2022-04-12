@@ -12,8 +12,8 @@ type gossConfig struct {
   DataDir string `yaml:"dataDir"`
   OutputDir string `yaml:"outputDir"`
   Clean bool `yaml:"clean"`
-  Pre string `yaml:"pre"`
-  Post string `yaml:"post"`
+  Pre interface{} `yaml:"pre"`
+  Post interface{} `yaml:"post"`
 }
 
 const DEFAULT_CONFIG_FILE = "goss.yaml"

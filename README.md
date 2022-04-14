@@ -7,6 +7,8 @@ very powerful, but is a Node application, and after a while dealing with dependa
 not documented yet, but there is a [sample project](https://github.com/brothertoad/uulists) here on github that you can look at and/or clone if you
 want to see how goss works.
 
+Not that unlike most static site generators, goss is not aimed at blogs.  In fact, it has no blog-like functionality.
+
 To install goss, just clone to a local directory, go into that directory, and type `go get` followed by `go install`.  You will need to have the Go
 compiler installed.
 

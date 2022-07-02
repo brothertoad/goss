@@ -5,6 +5,7 @@ import (
   "path/filepath"
   "io/fs"
   "html/template"
+  "github.com/urfave/cli/v2"
   "github.com/brothertoad/btu"
 )
 
@@ -17,6 +18,15 @@ var layoutTemplate *template.Template
 var globalData map[string]interface{}
 
 func main() {
+  app := &cli.App {
+    Name: "goss",
+    Usage: "a simple static site generator",
+    Action: gossMain,
+  }
+  app.Run(os.Args)
+}
+
+func gossMain(c *cli.Context) error {
   initConfig(&config)
   if len(os.Args) > 1 {
     loadConfig(&config, os.Args[1], true)
@@ -27,6 +37,7 @@ func main() {
   globalData = loadGlobalData(config.DataDir)
   processPages(config.PageDir, config.OutputDir, globalData)
   executeCommand(config.Post)
+  return nil
 }
 
 func loadLayouts(layoutDir string) {

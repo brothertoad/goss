@@ -33,7 +33,7 @@ func main() {
 func loadLayouts(layoutDir string) {
   btu.DirMustExist(layoutDir)
   layoutTemplate = template.New("").Funcs(template.FuncMap{
-    "include": includeAction,
+    "include": btu.ReadFileS,
   })
   err := filepath.Walk(layoutDir, func(path string, fileInfo fs.FileInfo, err error) error {
     // Ignore non-html files.

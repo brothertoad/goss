@@ -3,7 +3,6 @@ package main
 import (
   "os"
   "path/filepath"
-  "io/ioutil"
   "io/fs"
   "html/template"
   "github.com/brothertoad/btu"
@@ -40,19 +39,10 @@ func loadLayouts(layoutDir string) {
     if filepath.Ext(path) != ".html" {
       return nil
     }
-    b, ferr := ioutil.ReadFile(path)
-    btu.CheckError(ferr)
-    layoutTemplate, err = layoutTemplate.Parse(string(b))
+    layoutTemplate, err = layoutTemplate.Parse(btu.ReadFileS(path))
     btu.CheckError(err)
 		return nil
   })
-  btu.CheckError(err)
-}
-
-func copyFile(src, target string) {
-  input, err := ioutil.ReadFile(src)
-  btu.CheckError(err)
-  err = ioutil.WriteFile(target, input, 0644)
   btu.CheckError(err)
 }
 

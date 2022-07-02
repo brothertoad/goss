@@ -9,6 +9,8 @@ import (
   "github.com/brothertoad/btu"
 )
 
+const configFlag = "config"
+
 // TASK: Need to add logic to handle the case where one or more of the directories
 // consists for multiple levels (i.e., dir1/dir2).
 
@@ -21,6 +23,12 @@ func main() {
   app := &cli.App {
     Name: "goss",
     Usage: "a simple static site generator",
+    Flags: []cli.Flag {
+      &cli.StringFlag {
+        Name: configFlag,
+        Usage: "configuration file",
+      },
+    },
     Action: gossMain,
   }
   app.Run(os.Args)
@@ -28,8 +36,8 @@ func main() {
 
 func gossMain(c *cli.Context) error {
   initConfig(&config)
-  if len(os.Args) > 1 {
-    loadConfig(&config, os.Args[1], true)
+  if c.String(configFlag) != "" {
+    loadConfig(&config, c.String(configFlag), true)
   }
   createOutputDir(config.OutputDir, config.Clean)
   executeCommand(config.Pre)

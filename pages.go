@@ -12,6 +12,7 @@ import (
   "path/filepath"
   "github.com/adrg/frontmatter"
   "gopkg.in/yaml.v3"
+  "github.com/brothertoad/btu"
 )
 
 type pageInfo struct {
@@ -20,7 +21,7 @@ type pageInfo struct {
 }
 
 func processPages(pageDir string, outputDir string, globalData map[string]interface{}) {
-  dirMustExist(pageDir)
+  btu.DirMustExist(pageDir)
   err := filepath.Walk(pageDir, func(path string, fileInfo fs.FileInfo, err error) error {
     // Ignore non-html files.
     if filepath.Ext(path) != ".html" {
@@ -34,7 +35,7 @@ func processPages(pageDir string, outputDir string, globalData map[string]interf
     info := buildPageInfo(path, outputDir, fileInfo)
     // Clone the layout template, so we don't add have residue from previous pages.
     t, terr := layoutTemplate.Clone()
-    checkError(terr)
+    btu.CheckError(terr)
 
     // Copy the global data, then read and merge the frontmatter.
     pageData := make(map[string]interface{})
@@ -42,10 +43,10 @@ func processPages(pageDir string, outputDir string, globalData map[string]interf
       pageData[k] = v
     }
     b, ferr := ioutil.ReadFile(path)
-    checkError(ferr)
+    btu.CheckError(ferr)
     fm := make(map[string]interface{})
     rest, fmerr := frontmatter.Parse(bytes.NewReader(b), &fm)
-    checkError(fmerr)
+    btu.CheckError(fmerr)
     for k, v := range fm {
       pageData[k] = v
     }
@@ -55,7 +56,7 @@ func processPages(pageDir string, outputDir string, globalData map[string]interf
     if ferr != nil {
       pageMap := make(map[string]interface{})
       yerr := yaml.Unmarshal(b, pageMap)
-      checkError(yerr)
+      btu.CheckError(yerr)
       for k, v := range pageMap {
         pageData[k] = v
       }
@@ -63,7 +64,7 @@ func processPages(pageDir string, outputDir string, globalData map[string]interf
 
     // Parse what was left of the page after removing the frontmatter.
     t, terr = t.Parse(string(rest))
-    checkError(terr)
+    btu.CheckError(terr)
 
     // Determine the layout
     layoutValue, ok := pageData["layout"]
@@ -75,14 +76,14 @@ func processPages(pageDir string, outputDir string, globalData map[string]interf
     // Now we can execute the template and write the output.
     createDirForFile(info.outputPath)
     file, ferr := os.Create(info.outputPath)
-    checkError(nil)
+    btu.CheckError(nil)
     defer file.Close()
     w := bufio.NewWriter(file)
     t.ExecuteTemplate(w, layout, pageData)
     w.Flush()
     return nil
   })
-  checkError(err)
+  btu.CheckError(err)
 }
 
 func buildPageInfo(path string, outputDir string, fileInfo fs.FileInfo) pageInfo {

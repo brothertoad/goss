@@ -4,6 +4,7 @@ import (
   "io/ioutil"
   "log"
   "gopkg.in/yaml.v3"
+  "github.com/brothertoad/btu"
 )
 
 type gossConfig struct {
@@ -30,13 +31,14 @@ func initConfig(config *gossConfig) {
 }
 
 func loadConfig(config *gossConfig, path string, fileMustExist bool) {
-  if !fileExists(path) {
+  if !btu.FileExists(path) {
     if fileMustExist {
       log.Fatalf("Config file %s does not exist.\n", path)
     }
     return
   }
   b, err := ioutil.ReadFile(path)
-  checkError(err)
+  btu.CheckError(err)
   err = yaml.Unmarshal(b, config)
+  btu.CheckError(err)
 }

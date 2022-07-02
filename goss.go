@@ -6,6 +6,7 @@ import (
   "io/ioutil"
   "io/fs"
   "html/template"
+  "github.com/brothertoad/btu"
 )
 
 // TASK: Need to add logic to handle the case where one or more of the directories
@@ -30,7 +31,7 @@ func main() {
 }
 
 func loadLayouts(layoutDir string) {
-  dirMustExist(layoutDir)
+  btu.DirMustExist(layoutDir)
   layoutTemplate = template.New("").Funcs(template.FuncMap{
     "include": includeAction,
   })
@@ -40,25 +41,25 @@ func loadLayouts(layoutDir string) {
       return nil
     }
     b, ferr := ioutil.ReadFile(path)
-    checkError(ferr)
+    btu.CheckError(ferr)
     layoutTemplate, err = layoutTemplate.Parse(string(b))
-    checkError(err)
+    btu.CheckError(err)
 		return nil
   })
-  checkError(err)
+  btu.CheckError(err)
 }
 
 func copyFile(src, target string) {
   input, err := ioutil.ReadFile(src)
-  checkError(err)
+  btu.CheckError(err)
   err = ioutil.WriteFile(target, input, 0644)
-  checkError(err)
+  btu.CheckError(err)
 }
 
 func createOutputDir(outputDir string, clean bool) {
   if clean {
     err := os.RemoveAll(outputDir)
-    checkError(err)
+    btu.CheckError(err)
   }
   createDir(outputDir)
 }

@@ -1,12 +1,13 @@
 package main
 
 import (
-  "log"
   "os"
   "path/filepath"
+  "github.com/brothertoad/btu"
 )
 
-func fileExists(path string) bool {
+/*
+func _fileExists(path string) bool {
   fileInfo, err := os.Stat(path)
   if err != nil {
     return false
@@ -17,7 +18,7 @@ func fileExists(path string) bool {
   return true
 }
 
-func dirExists(dir string) bool {
+func _dirExists(dir string) bool {
   fileInfo, err := os.Stat(dir)
   if err != nil {
     return false
@@ -28,15 +29,16 @@ func dirExists(dir string) bool {
   return true
 }
 
-func dirMustExist(dir string) {
-  if !dirExists(dir) {
+func _dirMustExist(dir string) {
+  if !_dirExists(dir) {
     log.Fatal("%s does not exist\n", dir)
   }
 }
+*/
 
 func createDir(dir string) {
   err := os.MkdirAll(dir, 0755)
-  checkError(err)
+  btu.CheckError(err)
 }
 
 func createDirForFile(path string) {
@@ -46,12 +48,14 @@ func createDirForFile(path string) {
 
 func includeAction(path string) string {
   b, err := os.ReadFile(path)
-  checkError(err)
+  btu.CheckError(err)
   return string(b)
 }
 
-func checkError(err error) {
+/*
+func _checkError(err error) {
   if err != nil {
     log.Fatal(err)
   }
 }
+*/

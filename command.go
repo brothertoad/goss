@@ -5,6 +5,7 @@ import (
   "os"
   "os/exec"
   "reflect"
+  "github.com/brothertoad/btu"
 )
 
 func executeCommand(cmd interface{}) {
@@ -29,10 +30,10 @@ func executeCommand(cmd interface{}) {
   }
   if exe != "" {
     _, err := exec.LookPath(exe)
-    checkError(err)
+    btu.CheckError(err)
     command := exec.Command(exe, args...)
     command.Stdout = os.Stdout
     err = command.Run()
-    checkError(err)
+    btu.CheckError(err)
   }
 }

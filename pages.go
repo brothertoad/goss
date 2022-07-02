@@ -74,7 +74,7 @@ func processPages(pageDir string, outputDir string, globalData map[string]interf
     layout := fmt.Sprintf("%v", layoutValue)
 
     // Now we can execute the template and write the output.
-    createDirForFile(info.outputPath)
+    btu.CreateDirForFile(info.outputPath)
     file, ferr := os.Create(info.outputPath)
     btu.CheckError(nil)
     defer file.Close()

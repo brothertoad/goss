@@ -61,5 +61,5 @@ func createOutputDir(outputDir string, clean bool) {
     err := os.RemoveAll(outputDir)
     btu.CheckError(err)
   }
-  createDir(outputDir)
+  btu.CreateDir(outputDir)
 }

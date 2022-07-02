@@ -9,6 +9,6 @@ require (
 
 require (
 	github.com/BurntSushi/toml v0.3.1 // indirect
-	github.com/brothertoad/btu v0.0.0-20220627165445-9881c2d1fb54 // indirect
+	github.com/brothertoad/btu v1.1.0 // indirect
 	gopkg.in/yaml.v2 v2.3.0 // indirect
 )

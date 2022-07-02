@@ -4,6 +4,10 @@ github.com/adrg/frontmatter v0.2.0 h1:/DgnNe82o03riBd1S+ZDjd43wAmC6W35q67NHeLkPd
 github.com/adrg/frontmatter v0.2.0/go.mod h1:93rQCj3z3ZlwyxxpQioRKC1wDLto4aXHrbqIsnH9wmE=
 github.com/brothertoad/btu v0.0.0-20220627165445-9881c2d1fb54 h1:8ArCD4ezO4B3s6ZY9JHHYSpcxQUzWMyBRTLuWSbtBDs=
 github.com/brothertoad/btu v0.0.0-20220627165445-9881c2d1fb54/go.mod h1:Bjd9geMePjEm0x0w2PO83sZNzkhUaKerlNG1eBBmYrQ=
+github.com/brothertoad/btu v1.0.0 h1:ek0eOmfhNqg61ZdhEqsSwuSB08k9DSsW6pYJ0o+wVdg=
+github.com/brothertoad/btu v1.0.0/go.mod h1:Bjd9geMePjEm0x0w2PO83sZNzkhUaKerlNG1eBBmYrQ=
+github.com/brothertoad/btu v1.1.0 h1:4fcfZz+HigX3zQMtEexoJfRWVH1nl8IGDldjGI0l/1U=
+github.com/brothertoad/btu v1.1.0/go.mod h1:Bjd9geMePjEm0x0w2PO83sZNzkhUaKerlNG1eBBmYrQ=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
 gopkg.in/yaml.v2 v2.3.0 h1:clyUAQHOM3G0M3f5vQj7LuJrETvjVot3Z5el9nffUtU=
 gopkg.in/yaml.v2 v2.3.0/go.mod h1:hI93XBmqTisBFMUTm0b8Fm+jr3Dg1NNxqwp+5A1VGuI=

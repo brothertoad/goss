@@ -33,7 +33,7 @@ func processPages(pageDir string, outputDir string, globalData map[string]interf
     }
 
     info := buildPageInfo(path, outputDir, fileInfo)
-    // Clone the layout template, so we don't add have residue from previous pages.
+    // Clone the layout template, to avoid residue from previous pages.
     t, terr := layoutTemplate.Clone()
     btu.CheckError(terr)
 

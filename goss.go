@@ -4,7 +4,7 @@ import (
   "os"
   "path/filepath"
   "io/fs"
-  "html/template"
+  "text/template"
   "github.com/urfave/cli/v2"
   "github.com/brothertoad/btu"
 )

@@ -13,8 +13,6 @@ const configFlag = "config"
 
 // TASK: Need to add logic to handle the case where one or more of the directories
 // consists for multiple levels (i.e., dir1/dir2).
-// TASK: Use text/template rather than html/template, since we don't process
-// user-supplied data (as a non-static site might).
 
 var config gossConfig
 var layouts []string

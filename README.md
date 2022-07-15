@@ -14,3 +14,5 @@ compiler installed.
 
 To create a web site, go into the directory where the source files for your site are and simply type `goss`.  You can optionally supply a config file
 (defaults to goss.yaml).
+
+Note that uses the text/template module, rather than the html/template module, so no escaping of input is done.

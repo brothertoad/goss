@@ -3,11 +3,11 @@ module github.com/brothertoad/goss
 go 1.18
 
 require (
-	github.com/Joker/hpp v1.0.0
 	github.com/adrg/frontmatter v0.2.0
 	github.com/brothertoad/btu v1.1.0
 	github.com/noirbizarre/gonja v0.0.0-20200629003239-4d051fd0be61
 	github.com/urfave/cli/v2 v2.10.3
+	github.com/yosssi/gohtml v0.0.0-20201013000340-ee4748c638f4
 	gopkg.in/yaml.v3 v3.0.1
 )
 

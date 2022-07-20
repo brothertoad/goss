@@ -12,6 +12,8 @@ import (
   "path/filepath"
   "github.com/adrg/frontmatter"
   "gopkg.in/yaml.v3"
+  "github.com/noirbizarre/gonja"
+  "github.com/Joker/hpp"
   "github.com/brothertoad/btu"
 )
 
@@ -83,7 +85,12 @@ func processPages(pageDir string, outputDir string, globalData map[string]interf
       t.ExecuteTemplate(w, layout, pageData)
       w.Flush()
     } else if config.TemplateFormat == JINJA_FORMAT {
-
+      tpl := gonja.Must(gonja.FromBytes(rest))
+      out, err := tpl.Execute(pageData)
+      btu.CheckError(err)
+      btu.CreateDirForFile(info.outputPath)
+      err = os.WriteFile(info.outputPath, []byte(hpp.PrPrint(out)), 0644)
+      btu.CheckError(err)
     }
 
     return nil

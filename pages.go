@@ -52,7 +52,7 @@ func processPages(pageDir string, outputDir string, globalData map[string]interf
 
     // Read in page-specific data, if any.
     b, ferr = ioutil.ReadFile(info.dataPath)
-    if ferr != nil {
+    if ferr == nil {
       pageMap := make(map[string]interface{})
       yerr := yaml.Unmarshal(b, pageMap)
       btu.CheckError(yerr)

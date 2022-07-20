@@ -13,7 +13,6 @@ import (
   "github.com/adrg/frontmatter"
   "gopkg.in/yaml.v3"
   "github.com/noirbizarre/gonja"
-  "github.com/yosssi/gohtml"
   "github.com/brothertoad/btu"
 )
 
@@ -89,7 +88,7 @@ func processPages(pageDir string, outputDir string, globalData map[string]interf
       out, err := tpl.Execute(pageData)
       btu.CheckError(err)
       btu.CreateDirForFile(info.outputPath)
-      err = os.WriteFile(info.outputPath, []byte(gohtml.Format(out) + "\n"), 0644)
+      err = os.WriteFile(info.outputPath, []byte(out + "\n"), 0644)
       btu.CheckError(err)
     }
 

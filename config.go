@@ -7,7 +7,11 @@ import (
   "github.com/brothertoad/btu"
 )
 
+const JINJA_FORMAT  = "jinja"
+const GOLANG_FORMAT = "go"
+
 type gossConfig struct {
+  TemplateFormat string `yaml:"templateFormat"`
   PageDir string `yaml:"pageDir"`
   LayoutDir string `yaml:"layoutDir"`
   DataDir string `yaml:"dataDir"`
@@ -20,6 +24,7 @@ type gossConfig struct {
 const DEFAULT_CONFIG_FILE = "goss.yaml"
 
 func initConfig(config *gossConfig) {
+  config.TemplateFormat = JINJA_FORMAT
   config.PageDir = "pages"
   config.LayoutDir = "layouts"
   config.DataDir = "data"

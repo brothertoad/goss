@@ -33,9 +33,6 @@ func processPages(pageDir string, outputDir string, globalData map[string]interf
     }
 
     info := buildPageInfo(path, outputDir, fileInfo)
-    // Clone the layout template, to avoid residue from previous pages.
-    t, terr := layoutTemplate.Clone()
-    btu.CheckError(terr)
 
     // Copy the global data, then read and merge the frontmatter.
     pageData := make(map[string]interface{})
@@ -62,25 +59,33 @@ func processPages(pageDir string, outputDir string, globalData map[string]interf
       }
     }
 
-    // Parse what was left of the page after removing the frontmatter.
-    t, terr = t.Parse(string(rest))
-    btu.CheckError(terr)
+    if config.TemplateFormat == GOLANG_FORMAT {
+      // Clone the layout template, to avoid residue from previous pages.
+      t, terr := layoutTemplate.Clone()
+      btu.CheckError(terr)
 
-    // Determine the layout
-    layoutValue, ok := pageData["layout"]
-    if !ok {
-      log.Fatalf("No layout for page %s\n", path)
+      // Parse what was left of the page after removing the frontmatter.
+      t, terr = t.Parse(string(rest))
+      btu.CheckError(terr)
+
+      // Determine the layout
+      layoutValue, ok := pageData["layout"]
+      if !ok {
+        log.Fatalf("No layout for page %s\n", path)
+      }
+      layout := fmt.Sprintf("%v", layoutValue)
+
+      // Now we can execute the template and write the output.
+      btu.CreateDirForFile(info.outputPath)
+      file := btu.CreateFile(info.outputPath)
+      defer file.Close()
+      w := bufio.NewWriter(file)
+      t.ExecuteTemplate(w, layout, pageData)
+      w.Flush()
+    } else if config.TemplateFormat == JINJA_FORMAT {
+
     }
-    layout := fmt.Sprintf("%v", layoutValue)
 
-    // Now we can execute the template and write the output.
-    btu.CreateDirForFile(info.outputPath)
-    file, ferr := os.Create(info.outputPath)
-    btu.CheckError(nil)
-    defer file.Close()
-    w := bufio.NewWriter(file)
-    t.ExecuteTemplate(w, layout, pageData)
-    w.Flush()
     return nil
   })
   btu.CheckError(err)

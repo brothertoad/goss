@@ -41,7 +41,9 @@ func gossMain(c *cli.Context) error {
   }
   createOutputDir(config.OutputDir, config.Clean)
   executeCommand(config.Pre)
-  loadLayouts(config.LayoutDir)
+  if config.TemplateFormat == GOLANG_FORMAT {
+    loadLayouts(config.LayoutDir)
+  }
   globalData = loadGlobalData(config.DataDir)
   processPages(config.PageDir, config.OutputDir, globalData)
   executeCommand(config.Post)

@@ -30,10 +30,19 @@ func linkToFilter(e *exec.Evaluator, in *exec.Value, params *exec.VarArgs) *exec
 	return exec.AsValue(fmt.Sprintf(`<a href="%s">%s</a>`, params.First().String(), in.String()))
 }
 
+func nowrapFilter(e *exec.Evaluator, in *exec.Value, params *exec.VarArgs) *exec.Value {
+  if p := params.ExpectNothing(); p.IsError() {
+		return exec.AsValue(errors.Wrap(p, "Wrong signature for 'nowrap'"))
+	}
+	return exec.AsValue(fmt.Sprintf(`<span style="white-space: nowrap">%s</span>`, in.String()))
+}
+
 func processPages(pageDir string, outputDir string, globalData map[string]interface{}) {
   btu.DirMustExist(pageDir)
   if config.TemplateFormat == JINJA_FORMAT {
     err := gonja.DefaultEnv.Filters.Register("linkTo", linkToFilter)
+    btu.CheckError(err)
+    err = gonja.DefaultEnv.Filters.Register("nowrap", nowrapFilter)
     btu.CheckError(err)
   }
   err := filepath.Walk(pageDir, func(path string, fileInfo fs.FileInfo, err error) error {

@@ -15,4 +15,12 @@ compiler installed.
 To create a web site, go into the directory where the source files for your site are and simply type `goss`.  You can optionally supply a config file
 (defaults to goss.yaml).
 
-Note that uses the text/template module, rather than the html/template module, so no escaping of input is done.
+As of this writing (22 July 2022), goss supports both generic Golang templates (processed using text/template, rather than html/template), or jinja2
+templates (using the
+[gonja](https://github.com/noirbizarre/gonja)
+module).  The
+[jinja2 templates](https://jinja.palletsprojects.com/en/3.1.x/templates/)
+are much more powerful and easier to use.
+
+As of this writing, there are no releases, although I hope to do one soon.  (I did have some tags, but I deleted them, as I belatedly realized that
+there were significant issues).

@@ -10,11 +10,9 @@ import (
   "io/fs"
   "io/ioutil"
   "path/filepath"
-  "github.com/pkg/errors"
   "github.com/adrg/frontmatter"
   "gopkg.in/yaml.v3"
   "github.com/noirbizarre/gonja"
-  "github.com/noirbizarre/gonja/exec"
   "github.com/brothertoad/btu"
 )
 
@@ -23,19 +21,8 @@ type pageInfo struct {
   dataPath string
 }
 
-func linkToFilter(e *exec.Evaluator, in *exec.Value, params *exec.VarArgs) *exec.Value {
-  if p := params.ExpectArgs(1); p.IsError() {
-		return exec.AsValue(errors.Wrap(p, "Wrong signature for 'linkTo'"))
-	}
-	return exec.AsValue(fmt.Sprintf(`<a href="%s">%s</a>`, params.First().String(), in.String()))
-}
-
 func processPages(pageDir string, outputDir string, globalData map[string]interface{}) {
   btu.DirMustExist(pageDir)
-  if config.TemplateFormat == JINJA_FORMAT {
-    err := gonja.DefaultEnv.Filters.Register("linkTo", linkToFilter)
-    btu.CheckError(err)
-  }
   err := filepath.Walk(pageDir, func(path string, fileInfo fs.FileInfo, err error) error {
     // Ignore non-html files.
     if filepath.Ext(path) != ".html" {

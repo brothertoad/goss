@@ -2,7 +2,6 @@ package main
 
 import (
   "os"
-  "text/template"
   "github.com/urfave/cli/v2"
   "github.com/brothertoad/btu"
 )
@@ -13,8 +12,6 @@ const configFlag = "config"
 // consists for multiple levels (i.e., dir1/dir2).
 
 var config gossConfig
-var layouts []string
-var layoutTemplate *template.Template
 var globalData map[string]interface{}
 
 func main() {

@@ -4,7 +4,6 @@ import (
   "strings"
   "path/filepath"
   "io/fs"
-  "io/ioutil"
   "gopkg.in/yaml.v3"
   "github.com/brothertoad/btu"
 )
@@ -17,8 +16,7 @@ func loadGlobalData(dataDir string) map[string]interface{} {
       if filepath.Ext(path) != ".yaml" {
         return nil
       }
-      b, ferr := ioutil.ReadFile(path)
-      btu.CheckError(ferr)
+      b := btu.ReadFileB(path)
       // Get base name of the file, use that as the key in data.
       // TASK: Need to create nested data if files are in subdirectories.
       key := strings.TrimSuffix(fileInfo.Name(), ".yaml")

@@ -1,6 +1,7 @@
 # goss
 
-A simple static site generate written in Go.
+A simple static site generate written in Go.  At this point in time, it is still
+very much in the development stage.
 
 I wrote this (very simple) static site generator to create a few web sites.  I had previously used [metalsmith](https://metalsmith.io), which is
 very powerful, but is a Node application, and after a while dealing with dependabot alerts got annoying.  Since I wrote goss for my own use, it is
@@ -15,12 +16,11 @@ compiler installed.
 To create a web site, go into the directory where the source files for your site are and simply type `goss`.  You can optionally supply a config file
 (defaults to goss.yaml).
 
-As of this writing (22 July 2022), goss supports both generic Golang templates (processed using text/template, rather than html/template), or jinja2
-templates (using the
-[gonja](https://github.com/noirbizarre/gonja)
-module).  The
+goss uses
 [jinja2 templates](https://jinja.palletsprojects.com/en/3.1.x/templates/)
-are much more powerful and easier to use.
+(via the
+[gonja](https://github.com/noirbizarre/gonja)
+module).
 
 As of this writing, there are no releases, although I hope to do one soon.  (I did have some tags, but I deleted them, as I belatedly realized that
 there were significant issues).

@@ -2,8 +2,6 @@ package main
 
 import (
   "os"
-  "path/filepath"
-  "io/fs"
   "text/template"
   "github.com/urfave/cli/v2"
   "github.com/brothertoad/btu"
@@ -41,30 +39,10 @@ func gossMain(c *cli.Context) error {
   }
   createOutputDir(config.OutputDir, config.Clean)
   executeCommand(config.Pre)
-  if config.TemplateFormat == GOLANG_FORMAT {
-    loadLayouts(config.LayoutDir)
-  }
   globalData = loadGlobalData(config.DataDir)
   processPages(config.PageDir, config.OutputDir, globalData)
   executeCommand(config.Post)
   return nil
-}
-
-func loadLayouts(layoutDir string) {
-  btu.DirMustExist(layoutDir)
-  layoutTemplate = template.New("").Funcs(template.FuncMap{
-    "include": btu.ReadFileS,
-  })
-  err := filepath.Walk(layoutDir, func(path string, fileInfo fs.FileInfo, err error) error {
-    // Ignore non-html files.
-    if filepath.Ext(path) != ".html" {
-      return nil
-    }
-    layoutTemplate, err = layoutTemplate.Parse(btu.ReadFileS(path))
-    btu.CheckError(err)
-		return nil
-  })
-  btu.CheckError(err)
 }
 
 func createOutputDir(outputDir string, clean bool) {

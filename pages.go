@@ -1,9 +1,7 @@
 package main
 
 import (
-  "bufio"
   "bytes"
-  "fmt"
   "log"
   "os"
   "strings"
@@ -56,37 +54,12 @@ func processPages(pageDir string, outputDir string, globalData map[string]interf
       }
     }
 
-    if config.TemplateFormat == GOLANG_FORMAT {
-      // Clone the layout template, to avoid residue from previous pages.
-      t, terr := layoutTemplate.Clone()
-      btu.CheckError(terr)
-
-      // Parse what was left of the page after removing the frontmatter.
-      t, terr = t.Parse(string(rest))
-      btu.CheckError(terr)
-
-      // Determine the layout
-      layoutValue, ok := pageData["layout"]
-      if !ok {
-        log.Fatalf("No layout for page %s\n", path)
-      }
-      layout := fmt.Sprintf("%v", layoutValue)
-
-      // Now we can execute the template and write the output.
-      btu.CreateDirForFile(info.outputPath)
-      file := btu.CreateFile(info.outputPath)
-      defer file.Close()
-      w := bufio.NewWriter(file)
-      t.ExecuteTemplate(w, layout, pageData)
-      w.Flush()
-    } else if config.TemplateFormat == JINJA_FORMAT {
-      tpl := gonja.Must(gonja.FromBytes(rest))
-      out, err := tpl.Execute(pageData)
-      btu.CheckError(err)
-      btu.CreateDirForFile(info.outputPath)
-      err = os.WriteFile(info.outputPath, []byte(out + "\n"), 0644)
-      btu.CheckError(err)
-    }
+    tpl := gonja.Must(gonja.FromBytes(rest))
+    out, err := tpl.Execute(pageData)
+    btu.CheckError(err)
+    btu.CreateDirForFile(info.outputPath)
+    err = os.WriteFile(info.outputPath, []byte(out + "\n"), 0644)
+    btu.CheckError(err)
 
     return nil
   })

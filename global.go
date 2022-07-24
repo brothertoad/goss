@@ -16,12 +16,19 @@ func loadGlobalData(dataDir string) map[string]interface{} {
       if filepath.Ext(path) != ".yaml" {
         return nil
       }
+      // TASK: Need to create nested data if files are in subdirectories.  Perhaps not bother
+      // to support that, in which case we should skip those files with a warning.
       b := btu.ReadFileB(path)
-      // Get base name of the file, use that as the key in data.
-      // TASK: Need to create nested data if files are in subdirectories.
-      key := strings.TrimSuffix(fileInfo.Name(), ".yaml")
-      data[key] = make(map[string]interface{})
-      yerr := yaml.Unmarshal(b, data[key])
+      // Get base name of the file, use that as the key in data, unless file begins with
+      // an underscore.
+      var yerr error
+      if strings.HasPrefix(fileInfo.Name(), "_") {
+        yerr = yaml.Unmarshal(b, data)
+      } else {
+        key := strings.TrimSuffix(fileInfo.Name(), ".yaml")
+        data[key] = make(map[string]interface{})
+        yerr = yaml.Unmarshal(b, data[key])
+      }
       btu.CheckError(yerr)
   		return nil
     })

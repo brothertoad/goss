@@ -78,13 +78,7 @@ func validExtension(filename string) bool {
 }
 
 func validFilename(filename string) bool {
-  if !strings.HasPrefix(filename, "_") {
-    return true
-  }
-  if filename == "_index.html" || filename == "_index.html.j2" || filename == "_index.j2" {
-    return true
-  }
-  return false
+  return !strings.HasPrefix(filename, "__")
 }
 
 func buildPageInfo(path string, outputDir string, fileInfo fs.FileInfo) pageInfo {
@@ -94,10 +88,10 @@ func buildPageInfo(path string, outputDir string, fileInfo fs.FileInfo) pageInfo
   suffix := getSuffix(base)
   // TASK: handle the case where pageDir and/or outputDir has multiple components
   parts[0] = outputDir
-  // If the filename is _index.html or one of its variants, change it to index.html.
+  // If the filename starts with an underscore, remove the underscore and the suffix and add .html.
   // Otherwise, remove the suffix and add a separator followed by index.html.
-  if base == "_index.html" || base == "_index.html.j2" || base == "_index.j2" {
-    parts[len(parts)-1] = "index.html"
+  if strings.HasPrefix(base, "_") {
+    parts[len(parts)-1] = strings.TrimSuffix(base[1:], suffix) + ".html"
   } else {
     parts[len(parts)-1] = strings.TrimSuffix(base, suffix)
     parts = append(parts, "index.html")

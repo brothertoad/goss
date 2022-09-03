@@ -1,7 +1,6 @@
 package main
 
 import (
-  "log"
   "os"
   "os/exec"
   "reflect"
@@ -26,7 +25,7 @@ func executeCommand(cmd interface{}) {
     exe = cmds[0]
     args = cmds[1:]
   default:
-    log.Fatalf("don't know how to handle command type %s\n", reflect.TypeOf(cmd))
+    btu.Fatal("don't know how to handle command type %s\n", reflect.TypeOf(cmd))
   }
   if exe != "" {
     _, err := exec.LookPath(exe)

@@ -7,6 +7,7 @@ import (
 )
 
 const configFlag = "config"
+const logLevelFlag = "log-level"
 
 // TASK: Need to add logic to handle the case where one or more of the directories
 // consists for multiple levels (i.e., dir1/dir2).
@@ -23,6 +24,10 @@ func main() {
         Name: configFlag,
         Usage: "configuration file",
       },
+      &cli.StringFlag {
+        Name: logLevelFlag,
+        Usage: "log level",
+      },
     },
     Action: gossMain,
   }
@@ -30,6 +35,9 @@ func main() {
 }
 
 func gossMain(c *cli.Context) error {
+  if c.String(logLevelFlag) != "" {
+    btu.SetLogLevelByName(c.String(logLevelFlag))
+  }
   initConfig(&config)
   if c.String(configFlag) != "" {
     loadConfig(&config, c.String(configFlag), true)

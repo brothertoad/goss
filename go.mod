@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/adrg/frontmatter v0.2.0
-	github.com/brothertoad/btu v1.1.0
+	github.com/brothertoad/btu v1.3.0
 	github.com/noirbizarre/gonja v0.0.0-20200629003239-4d051fd0be61
 	github.com/urfave/cli/v2 v2.10.3
 	github.com/yosssi/gohtml v0.0.0-20201013000340-ee4748c638f4

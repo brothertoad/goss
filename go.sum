@@ -9,6 +9,10 @@ github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869/go.mod h1:Ekp36dR
 github.com/bmuller/arrow v0.0.0-20180318014521-b14bfde8dff2/go.mod h1:+voQMVaya0tr8p3W33Qxj/dKOjZNCepW+k8JJvt91gk=
 github.com/brothertoad/btu v1.1.0 h1:4fcfZz+HigX3zQMtEexoJfRWVH1nl8IGDldjGI0l/1U=
 github.com/brothertoad/btu v1.1.0/go.mod h1:Bjd9geMePjEm0x0w2PO83sZNzkhUaKerlNG1eBBmYrQ=
+github.com/brothertoad/btu v1.2.1 h1:jrJzj8tmfYPpTtSo2ZQsmw5Mc4aRo0uQDbomSBIO8V8=
+github.com/brothertoad/btu v1.2.1/go.mod h1:Bjd9geMePjEm0x0w2PO83sZNzkhUaKerlNG1eBBmYrQ=
+github.com/brothertoad/btu v1.3.0 h1:v2pH8B121JcyVHrmYKzzVgkfZeEgQvl+NVa+0Im2FO8=
+github.com/brothertoad/btu v1.3.0/go.mod h1:Bjd9geMePjEm0x0w2PO83sZNzkhUaKerlNG1eBBmYrQ=
 github.com/bugsnag/bugsnag-go v1.4.0/go.mod h1:2oa8nejYd4cQ/b0hMIopN0lCRxU0bueqREvZLWFrtK8=
 github.com/bugsnag/panicwrap v1.2.0/go.mod h1:D/8v3kj0zr8ZAKg1AQ6crr+5VwKN5eIywRkfhyM/+dE=
 github.com/certifi/gocertifi v0.0.0-20190105021004-abcd57078448/go.mod h1:GJKEexRPVJrBSOjoqN5VNOIKJ5Q3RViH6eu3puDRwx4=

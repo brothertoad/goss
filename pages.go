@@ -2,7 +2,6 @@ package main
 
 import (
   "bytes"
-  "log"
   "os"
   "strings"
   "io/fs"
@@ -85,8 +84,10 @@ func buildPageInfo(path string, outputDir string, fileInfo fs.FileInfo) pageInfo
   var info pageInfo
   _, base := filepath.Split(path)
   parts := strings.Split(path, string(os.PathSeparator))
+  btu.Debug("pageDir is %s\n", config.PageDir)
+  btu.Debug("path is %s, parts is %+v\n", path, parts)
   suffix := getSuffix(base)
-  // TASK: handle the case where pageDir and/or outputDir has multiple components
+  // TASK: handle the case where pageDir has multiple components
   parts[0] = outputDir
   // If the filename starts with an underscore, remove the underscore and the suffix and add .html.
   // Otherwise, remove the suffix and add a separator followed by index.html.
@@ -97,6 +98,7 @@ func buildPageInfo(path string, outputDir string, fileInfo fs.FileInfo) pageInfo
     parts = append(parts, "index.html")
   }
   info.outputPath = filepath.Join(parts...)
+  btu.Debug("outputPath is %s\n", info.outputPath)
   info.dataPath = strings.TrimSuffix(path, suffix) + ".yaml"
   return info
 }
@@ -111,6 +113,6 @@ func getSuffix(base string) string {
   if strings.HasSuffix(base, ".j2") {
     return ".j2"
   }
-  log.Fatalf("Can't get suffix of %s\n", base)
+  btu.Fatal("Can't get suffix of %s\n", base)
   return ""
 }

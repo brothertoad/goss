@@ -2,7 +2,6 @@ package main
 
 import (
   "io/ioutil"
-  "log"
   "gopkg.in/yaml.v3"
   "github.com/brothertoad/btu"
 )
@@ -33,7 +32,7 @@ func initConfig(config *gossConfig) {
 func loadConfig(config *gossConfig, path string, fileMustExist bool) {
   if !btu.FileExists(path) {
     if fileMustExist {
-      log.Fatalf("Config file %s does not exist.\n", path)
+      btu.Fatal("Config file %s does not exist.\n", path)
     }
     return
   }

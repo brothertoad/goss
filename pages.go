@@ -18,6 +18,8 @@ type pageInfo struct {
   dataPath string
 }
 
+var numPageDirParts int
+
 func processPages(pageDir string, outputDir string, globalData map[string]interface{}) {
   btu.DirMustExist(pageDir)
   err := filepath.Walk(pageDir, func(path string, fileInfo fs.FileInfo, err error) error {
@@ -83,9 +85,11 @@ func validFilename(filename string) bool {
 func buildPageInfo(path string, outputDir string, fileInfo fs.FileInfo) pageInfo {
   var info pageInfo
   _, base := filepath.Split(path)
+  relativePath := strings.TrimPrefix(path, config.PageDir)
   parts := strings.Split(path, string(os.PathSeparator))
-  btu.Debug("pageDir is %s\n", config.PageDir)
+  btu.Debug("pageDir is %s, relativePath is %s\n", config.PageDir, relativePath)
   btu.Debug("path is %s, parts is %+v\n", path, parts)
+  btu.Debug("output join is %s\n", filepath.Join(outputDir, relativePath))
   suffix := getSuffix(base)
   // TASK: handle the case where pageDir has multiple components
   parts[0] = outputDir
@@ -99,6 +103,20 @@ func buildPageInfo(path string, outputDir string, fileInfo fs.FileInfo) pageInfo
   }
   info.outputPath = filepath.Join(parts...)
   btu.Debug("outputPath is %s\n", info.outputPath)
+  btu.Debug("Now try again...\n")
+  outputPath := filepath.Join(outputDir, relativePath)
+  dir, base := filepath.Split(outputPath)
+  suffix = getSuffix(outputPath)
+  btu.Debug("base is %s\n", base)
+  if strings.HasPrefix(base, "_") {
+    outputPath = filepath.Join(dir, strings.TrimSuffix(base[1:], suffix) + ".html")
+  } else {
+    outputPath = strings.TrimSuffix(outputPath, suffix)
+    outputPath = filepath.Join(outputPath, "index.html")
+  }
+  btu.Debug("dir is %s\n", dir)
+  btu.Debug("outputPath is %s\n\n", outputPath)
+  info.outputPath = outputPath
   info.dataPath = strings.TrimSuffix(path, suffix) + ".yaml"
   return info
 }

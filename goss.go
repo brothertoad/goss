@@ -1,16 +1,15 @@
 package main
 
 import (
+  "fmt"
   "os"
+  "gopkg.in/yaml.v3"
   "github.com/urfave/cli/v2"
   "github.com/brothertoad/btu"
 )
 
 const configFlag = "config"
 const logLevelFlag = "log-level"
-
-// TASK: Need to add logic to handle the case where one or more of the directories
-// consists for multiple levels (i.e., dir1/dir2).
 
 var config gossConfig
 var globalData map[string]interface{}
@@ -28,6 +27,14 @@ func main() {
         Name: logLevelFlag,
         Usage: "log level",
       },
+      &cli.BoolFlag {
+        Name: "data2",
+        Usage: "use level 2 data loading",
+      },
+      &cli.BoolFlag {
+        Name: "yaml",
+        Usage: "print global data in yaml format",
+      },
     },
     Action: gossMain,
   }
@@ -44,7 +51,16 @@ func gossMain(c *cli.Context) error {
   }
   createOutputDir(config.OutputDir, config.Clean)
   executeCommand(config.Pre)
-  globalData = loadGlobalData(config.DataDir)
+  if c.Bool("data2") {
+    globalData = loadGlobalData2(config.DataDir)
+  } else {
+    globalData = loadGlobalData(config.DataDir)
+  }
+  if c.Bool("yaml") {
+    bytes, err := yaml.Marshal(globalData)
+    btu.CheckError(err)
+    fmt.Printf("%s\n", string(bytes[:]))
+  }
   processPages(config.PageDir, config.OutputDir, globalData)
   executeCommand(config.Post)
   return nil

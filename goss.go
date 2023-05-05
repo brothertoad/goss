@@ -28,10 +28,6 @@ func main() {
         Usage: "log level",
       },
       &cli.BoolFlag {
-        Name: "data2",
-        Usage: "use level 2 data loading",
-      },
-      &cli.BoolFlag {
         Name: "yaml",
         Usage: "print global data in yaml format",
       },
@@ -51,11 +47,7 @@ func gossMain(c *cli.Context) error {
   }
   createOutputDir(config.OutputDir, config.Clean)
   executeCommand(config.Pre)
-  if c.Bool("data2") {
-    globalData = loadGlobalData2(config.DataDir)
-  } else {
-    globalData = loadGlobalData(config.DataDir)
-  }
+  globalData = loadGlobalData(config.DataDir)
   if c.Bool("yaml") {
     bytes, err := yaml.Marshal(globalData)
     btu.CheckError(err)

@@ -23,7 +23,7 @@ type pageInfo struct {
 const TEXTDATE = "January 2, 2006"
 
 // key for page modification date
-const DATE_MODIFIED_KEY = "dateModified"
+const DATE_MODIFIED_KEY = "modTime"
 
 var numPageDirParts int
 

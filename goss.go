@@ -6,6 +6,7 @@ import (
   "gopkg.in/yaml.v3"
   "github.com/urfave/cli/v2"
   "github.com/brothertoad/btu"
+  "github.com/brothertoad/goss/gossutil"
 )
 
 const configFlag = "config"
@@ -47,7 +48,7 @@ func gossMain(c *cli.Context) error {
   }
   createOutputDir(config.OutputDir, config.Clean)
   executeCommand(config.Pre)
-  globalData = loadGlobalData(config.DataDir)
+  globalData = gossutil.LoadGlobalData(config.DataDir)
   if c.Bool("yaml") {
     bytes, err := yaml.Marshal(globalData)
     btu.CheckError(err)

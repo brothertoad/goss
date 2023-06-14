@@ -18,6 +18,13 @@ type pageInfo struct {
   dataPath string
 }
 
+// Default format for page modification date.
+// Should make this configurable.
+const TEXTDATE = "January 2, 2006"
+
+// key for page modification date
+const DATE_MODIFIED_KEY = "dateModified"
+
 var numPageDirParts int
 
 func processPages(pageDir string, outputDir string, globalData map[string]interface{}) {
@@ -54,6 +61,9 @@ func processPages(pageDir string, outputDir string, globalData map[string]interf
         pageData[k] = v
       }
     }
+
+    // Get the last-modified date of the file, and add it as a page-specific property.
+    pageData[DATE_MODIFIED_KEY] = fileInfo.ModTime().Format(TEXTDATE)
 
     tpl := gonja.Must(gonja.FromBytes(rest))
     out, err := tpl.Execute(pageData)

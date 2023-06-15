@@ -20,22 +20,50 @@ const J2_SUFFIX = "html.j2"
 const YAML_SUFFIX = "yaml"
 const PER_PAGE_DIR = "perPage"
 
-type KitType map[string]string
+type KitType struct {
+  name string
+  boxart string
+  scalematesId string
+  brand string
+  scale string
+  number string
+}
+
+type PageDataType struct {
+  title string
+  boxartUrl string
+  scalematesUrl string
+  serial int
+}
+
+// Keys for KitType
+const KIT_KEY_NAME = "name"
+const KIT_KEY_BOXART = "boxart"
+const KIT_KEY_SCALEMATES = "scalematesId"
+const KIT_KEY_BRAND = "brand"
+const KIT_KEY_SCALE = "scale"
+const KIT_KEY_NUMBER = "number"
+
+// Keys for page data
+const PAGE_KEY_TITLE = "title"
+const PAGE_KEY_SCALEMATES_URL = "scalematesUrl"
+const PAGE_KEY_BOXART_URL = "boxartUrl"
 
 var globalData map[string]interface{}
-var kits map[string]KitType
+var kitMap map[string]KitType
 
 func main() {
   globalData = gossutil.LoadGlobalData(DATA_DIR)
-  kits = globalData["kits"].(map[string]KitType)
+  kitMap = createKitMap(globalData["kits"].(map[string]interface{}))
   _ = filepath.Walk(SRC_DIR, func(path string, info os.FileInfo, err error) error {
     if strings.HasSuffix(path, J2_SUFFIX) {
       relativePath := path[(len(PAGES_DIR) + 1):]
       dataRelativePath := filepath.Join(PER_PAGE_DIR, (strings.TrimSuffix(relativePath, J2_SUFFIX) + YAML_SUFFIX))
       kitKey := getKitKey(path)
-      kit := kits[kitKey]
-      fmt.Printf("Walking %s, relativePath is %s, dataRelativePath is %s, kitKey is %s\n", path, relativePath, dataRelativePath, kitKey)
+      kit := kitMap[kitKey]
+      fmt.Printf("Walking %s, relativePath is %s, dataRelativePath is %s, kit is %+v\n", path, relativePath, dataRelativePath, kit)
       pageData := createPageData(kit)
+      fmt.Printf("pageData is %v\n", pageData)
       writePageData(dataRelativePath, pageData)
     }
     return nil
@@ -44,7 +72,13 @@ func main() {
 
 func createPageData(kit KitType) map[string]interface{} {
   data := make(map[string]interface{})
-  data["title"] = kit["name"]
+  data[PAGE_KEY_TITLE] = kit.name
+  if kit.boxart != "" && kit.boxart != "None" {
+    data[PAGE_KEY_BOXART_URL] = "https://d1dems3vhrlf9r.cloudfront.net/boxart/" + kit.boxart
+  }
+  if kit.scalematesId != "" {
+    data[PAGE_KEY_SCALEMATES_URL] = "http://www.scalemates.com/kits/" + kit.scalematesId
+  }
   return data
 }
 
@@ -54,6 +88,22 @@ func writePageData(path string, data map[string]interface{}) {
   btu.CreateDirForFile(path)
   err = os.WriteFile(path, b, 0644)
   btu.CheckError(err)
+}
+
+func createKitMap(m map[string]interface{}) map[string]KitType {
+  kitMap := make(map[string]KitType)
+  for k, v := range(m) {
+    var kit KitType
+    vmap := v.(map[string]interface{})
+    kit.name = vmap[KIT_KEY_NAME].(string)
+    kit.boxart = vmap[KIT_KEY_BOXART].(string)
+    kit.scalematesId = vmap[KIT_KEY_SCALEMATES].(string)
+    kit.brand = vmap[KIT_KEY_BRAND].(string)
+    kit.scale = vmap[KIT_KEY_SCALE].(string)
+    kit.number = vmap[KIT_KEY_NUMBER].(string)
+    kitMap[k] = kit
+  }
+  return kitMap
 }
 
 func getKitKey(path string) string {

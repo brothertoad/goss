@@ -6,6 +6,7 @@ import (
   "io/ioutil"
   "os"
   "path/filepath"
+  "strconv"
   "strings"
   "github.com/adrg/frontmatter"
   "gopkg.in/yaml.v3"
@@ -30,10 +31,13 @@ type KitType struct {
 }
 
 type PageDataType struct {
-  title string
-  boxartUrl string
-  scalematesUrl string
-  serial int
+  Title string `yaml:"title"`
+  BoxartUrl string `yaml:"boxartUrl"`
+  ScalematesUrl string `yaml:"scalematesUrl"`
+  CompletionDate string `yaml:"completionDate"`
+  PreviousUrl string `yaml:"previousUrl"`
+  NextUrl string `yaml:"nextUrl"`
+  Key int `yaml:"key"`
 }
 
 // Keys for KitType
@@ -43,11 +47,6 @@ const KIT_KEY_SCALEMATES = "scalematesId"
 const KIT_KEY_BRAND = "brand"
 const KIT_KEY_SCALE = "scale"
 const KIT_KEY_NUMBER = "number"
-
-// Keys for page data
-const PAGE_KEY_TITLE = "title"
-const PAGE_KEY_SCALEMATES_URL = "scalematesUrl"
-const PAGE_KEY_BOXART_URL = "boxartUrl"
 
 var globalData map[string]interface{}
 var kitMap map[string]KitType
@@ -63,27 +62,36 @@ func main() {
       kit := kitMap[kitKey]
       fmt.Printf("Walking %s, relativePath is %s, dataRelativePath is %s, kit is %+v\n", path, relativePath, dataRelativePath, kit)
       pageData := createPageData(kit)
-      fmt.Printf("pageData is %v\n", pageData)
+      pageData = addBuildInfo(pageData, relativePath)
+      fmt.Printf("pageData is %+v\n", pageData)
       writePageData(dataRelativePath, pageData)
     }
     return nil
   })
 }
 
-func createPageData(kit KitType) map[string]interface{} {
-  data := make(map[string]interface{})
-  data[PAGE_KEY_TITLE] = kit.name
+func createPageData(kit KitType) PageDataType {
+  var pageData PageDataType
+  pageData.Title = kit.name
   if kit.boxart != "" && kit.boxart != "None" {
-    data[PAGE_KEY_BOXART_URL] = "https://d1dems3vhrlf9r.cloudfront.net/boxart/" + kit.boxart
+    pageData.BoxartUrl = "https://d1dems3vhrlf9r.cloudfront.net/boxart/" + kit.boxart
   }
   if kit.scalematesId != "" {
-    data[PAGE_KEY_SCALEMATES_URL] = "http://www.scalemates.com/kits/" + kit.scalematesId
+    pageData.ScalematesUrl = "http://www.scalemates.com/kits/" + kit.scalematesId
   }
-  return data
+  return pageData
 }
 
-func writePageData(path string, data map[string]interface{}) {
-  b, err := yaml.Marshal(data)
+func addBuildInfo(pageData PageDataType, relativePath string) PageDataType {
+  key, err := strconv.Atoi(relativePath[7:11] + relativePath[12:16])
+  btu.CheckError(err)
+  pageData.Key = key
+  pageData.CompletionDate = relativePath[7:11]
+  return pageData
+}
+
+func writePageData(path string, pageData PageDataType) {
+  b, err := yaml.Marshal(pageData)
   btu.CheckError(err)
   btu.CreateDirForFile(path)
   err = os.WriteFile(path, b, 0644)

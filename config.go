@@ -15,6 +15,7 @@ type gossConfig struct {
   Clean bool `yaml:"clean"`
   Pre interface{} `yaml:"pre"`
   Post interface{} `yaml:"post"`
+  ModTimeFormat string `yaml:"modTimeFormat"`
 }
 
 const DEFAULT_CONFIG_FILE = "goss.yaml"

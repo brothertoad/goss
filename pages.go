@@ -57,7 +57,11 @@ func processPages(pageDir string, outputDir string, globalData map[string]interf
     readPageData(info.perPageDataPath, pageData)
 
     // Get the last-modified date of the file, and add it as a page-specific property.
-    pageData[DATE_MODIFIED_KEY] = fileInfo.ModTime().Format(TEXTDATE)
+    modTimeFormat := TEXTDATE
+    if config.ModTimeFormat != "" {
+      modTimeFormat = config.ModTimeFormat
+    }
+    pageData[DATE_MODIFIED_KEY] = fileInfo.ModTime().Format(modTimeFormat)
 
     tpl := gonja.Must(gonja.FromBytes(rest))
     out, err := tpl.Execute(pageData)

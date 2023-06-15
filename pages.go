@@ -16,6 +16,7 @@ import (
 type pageInfo struct {
   outputPath string
   dataPath string
+  perPageDataPath string
 }
 
 // Default format for page modification date.
@@ -108,6 +109,10 @@ func buildPageInfo(path string, outputDir string, fileInfo fs.FileInfo) pageInfo
   }
   info.outputPath = outputPath
   info.dataPath = strings.TrimSuffix(path, suffix) + ".yaml"
+  if config.PerPageDataDir != "" {
+    info.perPageDataPath = filepath.Join(config.PerPageDataDir, strings.TrimSuffix(relativePath, suffix) + ".yaml")
+  }
+  btu.Log(10, "path is %s, relativePath is %s, dataPath is %s, perPageDataPath is %s\n", path, relativePath, info.dataPath, info.perPageDataPath)
   return info
 }
 

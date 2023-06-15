@@ -10,6 +10,7 @@ type gossConfig struct {
   PageDir string `yaml:"pageDir"`
   LayoutDir string `yaml:"layoutDir"`
   DataDir string `yaml:"dataDir"`
+  PerPageDataDir string `yaml:"perPageDataDir"`
   OutputDir string `yaml:"outputDir"`
   Clean bool `yaml:"clean"`
   Pre interface{} `yaml:"pre"`

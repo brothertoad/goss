@@ -53,15 +53,8 @@ func processPages(pageDir string, outputDir string, globalData map[string]interf
     }
 
     // Read in page-specific data, if any.
-    b, ferr = ioutil.ReadFile(info.dataPath)
-    if ferr == nil {
-      pageMap := make(map[string]interface{})
-      yerr := yaml.Unmarshal(b, pageMap)
-      btu.CheckError(yerr)
-      for k, v := range pageMap {
-        pageData[k] = v
-      }
-    }
+    readPageData(info.dataPath, pageData)
+    readPageData(info.perPageDataPath, pageData)
 
     // Get the last-modified date of the file, and add it as a page-specific property.
     pageData[DATE_MODIFIED_KEY] = fileInfo.ModTime().Format(TEXTDATE)
@@ -76,6 +69,18 @@ func processPages(pageDir string, outputDir string, globalData map[string]interf
     return nil
   })
   btu.CheckError(err)
+}
+
+func readPageData(path string, pageData map[string]interface{}) {
+  b, ferr := ioutil.ReadFile(path)
+  if ferr == nil {
+    pageMap := make(map[string]interface{})
+    yerr := yaml.Unmarshal(b, pageMap)
+    btu.CheckError(yerr)
+    for k, v := range pageMap {
+      pageData[k] = v
+    }
+  }
 }
 
 func validExtension(filename string) bool {

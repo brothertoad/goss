@@ -20,11 +20,11 @@ type pageInfo struct {
 }
 
 // Default format for page modification date.
-// Should make this configurable.
 const TEXTDATE = "January 2, 2006"
 
-// key for page modification date
+// key for page-specific properties
 const DATE_MODIFIED_KEY = "modTime"
+const PATH_KEY = "path"
 
 var numPageDirParts int
 
@@ -62,6 +62,9 @@ func processPages(pageDir string, outputDir string, globalData map[string]interf
       modTimeFormat = config.ModTimeFormat
     }
     pageData[DATE_MODIFIED_KEY] = fileInfo.ModTime().Format(modTimeFormat)
+
+    // Add other generic page-specific properties.
+    pageData[PATH_KEY] = strings.TrimPrefix(path, config.PageDir)[1:]
 
     tpl := gonja.Must(gonja.FromBytes(rest))
     out, err := tpl.Execute(pageData)

@@ -8,6 +8,7 @@ import (
   "path/filepath"
   "strconv"
   "strings"
+  "time"
   "github.com/adrg/frontmatter"
   "gopkg.in/yaml.v3"
   "github.com/brothertoad/btu"
@@ -61,8 +62,7 @@ func main() {
       kitKey := getKitKey(path)
       kit := kitMap[kitKey]
       fmt.Printf("Walking %s, relativePath is %s, dataRelativePath is %s, kit is %+v\n", path, relativePath, dataRelativePath, kit)
-      pageData := createPageData(kit)
-      pageData = addBuildInfo(pageData, relativePath)
+      pageData := createPageData(kit, relativePath)
       fmt.Printf("pageData is %+v\n", pageData)
       writePageData(dataRelativePath, pageData)
     }
@@ -70,7 +70,7 @@ func main() {
   })
 }
 
-func createPageData(kit KitType) PageDataType {
+func createPageData(kit KitType, relativePath string) PageDataType {
   var pageData PageDataType
   pageData.Title = kit.name
   if kit.boxart != "" && kit.boxart != "None" {
@@ -79,14 +79,12 @@ func createPageData(kit KitType) PageDataType {
   if kit.scalematesId != "" {
     pageData.ScalematesUrl = "http://www.scalemates.com/kits/" + kit.scalematesId
   }
-  return pageData
-}
-
-func addBuildInfo(pageData PageDataType, relativePath string) PageDataType {
   key, err := strconv.Atoi(relativePath[7:11] + relativePath[12:16])
   btu.CheckError(err)
   pageData.Key = key
-  pageData.CompletionDate = relativePath[7:11]
+  month, err := strconv.Atoi(relativePath[12:14])
+  btu.CheckError(err)
+  pageData.CompletionDate = time.Month(month).String() + ", " + relativePath[7:11]
   return pageData
 }
 

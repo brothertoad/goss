@@ -40,6 +40,8 @@ type PageDataType struct {
   NextUrl string `yaml:"nextUrl"`
   Key int `yaml:"key"`
   Url string `yaml:"url"`
+  Scale string `yaml:"scale"`
+  Brand string `yaml:"brand"`
   Draft bool `yaml:"draft"`
   // These fields are not needed outside of this app.
   dataRelativePath string
@@ -84,6 +86,7 @@ func main() {
   for _, pageData := range(pageList) {
     writePageData(pageData)
   }
+  writeBuildsList()
 }
 
 func addPreviousNext() {
@@ -100,6 +103,12 @@ func addPreviousNext() {
 func createPageData(kit KitType, relativePath string) PageDataType {
   var pageData PageDataType
   pageData.Title = kit.name
+  pageData.Brand = kit.brand
+  if kit.scale != "" {
+    pageData.Scale = kit.scale
+  } else {
+    pageData.Scale = "N/A"
+  }
   if kit.boxart != "" && kit.boxart != "None" {
     pageData.BoxartUrl = "https://d1dems3vhrlf9r.cloudfront.net/boxart/" + kit.boxart
   }
@@ -120,6 +129,14 @@ func writePageData(pageData PageDataType) {
   btu.CheckError(err)
   btu.CreateDirForFile(pageData.dataRelativePath)
   err = os.WriteFile(pageData.dataRelativePath, b, 0644)
+  btu.CheckError(err)
+}
+
+func writeBuildsList() {
+  b, err := yaml.Marshal(pageList)
+  btu.CheckError(err)
+  path := filepath.Join(PER_PAGE_DIR, "builds" + YAML_SUFFIX)
+  err = os.WriteFile(path, b, 0644)
   btu.CheckError(err)
 }
 

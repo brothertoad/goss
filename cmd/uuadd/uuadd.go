@@ -66,10 +66,13 @@ func main() {
       relativePath := path[(len(PAGES_DIR) + 1):]
       base := strings.TrimSuffix(relativePath, "." + J2_SUFFIX)
       dataRelativePath := filepath.Join(PER_PAGE_DIR, base + YAML_SUFFIX)
-      kitKey := getKitKey(path)
-      kit := kitMap[kitKey]
+      fm := getFrontMatter(path)
+      kit := kitMap[fm["kit"].(string)]
       // fmt.Printf("Walking %s, relativePath is %s, dataRelativePath is %s, kit is %+v\n", path, relativePath, dataRelativePath, kit)
       pageData := createPageData(kit, relativePath)
+      if draft := fm["draft"]; draft != nil {
+        pageData.Draft = fm["draft"].(bool)
+      }
       pageData.Url = "/" + base + "/"
       pageData.dataRelativePath = dataRelativePath
       pageList = append(pageList, pageData)
@@ -136,11 +139,11 @@ func createKitMap(m map[string]interface{}) map[string]KitType {
   return kitMap
 }
 
-func getKitKey(path string) string {
+func getFrontMatter(path string) map[string]interface{} {
   b, err := ioutil.ReadFile(path)
   btu.CheckError(err)
   fm := make(map[string]interface{})
   _, err = frontmatter.Parse(bytes.NewReader(b), &fm)
   btu.CheckError(err)
-  return fm["kit"].(string)
+  return fm
 }

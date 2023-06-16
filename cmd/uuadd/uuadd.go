@@ -6,7 +6,6 @@ import (
   "io/ioutil"
   "os"
   "path/filepath"
-  "sort"
   "strconv"
   "strings"
   "time"
@@ -55,12 +54,12 @@ const KIT_KEY_NUMBER = "number"
 
 var globalData map[string]interface{}
 var kitMap map[string]KitType
-var pageMap map[int]PageDataType
+var pageList []PageDataType
 
 func main() {
   globalData = gossutil.LoadGlobalData(DATA_DIR)
   kitMap = createKitMap(globalData["kits"].(map[string]interface{}))
-  pageMap = make(map[int]PageDataType)
+  pageList = make([]PageDataType, 0, 0)
   _ = filepath.Walk(SRC_DIR, func(path string, info os.FileInfo, err error) error {
     if strings.HasSuffix(path, J2_SUFFIX) {
       relativePath := path[(len(PAGES_DIR) + 1):]
@@ -72,17 +71,19 @@ func main() {
       pageData := createPageData(kit, relativePath)
       pageData.url = "/" + base + "/"
       pageData.dataRelativePath = dataRelativePath
-      pageMap[pageData.Key] = pageData
+      pageList = append(pageList, pageData)
     }
     return nil
   })
+  sortPageList()
   addPreviousNext()
-  for _, pageData := range(pageMap) {
+  for _, pageData := range(pageList) {
     writePageData(pageData)
   }
 }
 
-func addPreviousNext() {
+/*
+func sortPageList() {
   // Per https://yourbasic.org/golang/how-to-sort-in-go/#bonus-sort-a-map-by-key-or-value
   n := len(pageMap)
   keys := make([]int, 0, n)
@@ -90,24 +91,21 @@ func addPreviousNext() {
     keys = append(keys, k)
   }
   sort.Ints(keys)
-  // Add next to the first page, and previous to the last manually.
-  // Have to assign to a copy of the struct, due to Golang.
-  // See https://stackoverflow.com/questions/42605337/cannot-assign-to-struct-field-in-a-map
-  if entry, ok := pageMap[keys[0]]; ok {
-    entry.NextUrl = pageMap[keys[1]].url
-    pageMap[keys[0]] = entry
+  pageList = make([]PageDataType, 0, n)
+  for _, v := range(keys) {
+    pageList = append(pageList, pageMap[v])
   }
-  if entry, ok := pageMap[keys[n-1]]; ok {
-    entry.PreviousUrl = pageMap[keys[n-2]].url
-    pageMap[keys[n-1]] = entry
-  }
+}
+*/
+
+func addPreviousNext() {
+  n := len(pageList)
+  pageList[0].NextUrl = pageList[1].url
+  pageList[n-1].PreviousUrl = pageList[n-2].url
   // Now do the ones in between.
   for j := 1; j < (n -1); j++ {
-    if entry, ok := pageMap[keys[j]]; ok {
-      entry.NextUrl = pageMap[keys[j+1]].url
-      entry.PreviousUrl = pageMap[keys[j-1]].url
-      pageMap[keys[j]] = entry
-    }
+    pageList[j].NextUrl = pageList[j+1].url
+    pageList[j].PreviousUrl = pageList[j-1].url
   }
 }
 

@@ -133,7 +133,9 @@ func writePageData(pageData PageDataType) {
 }
 
 func writeBuildsList() {
-  b, err := yaml.Marshal(pageList)
+  builds := make(map[string]interface{})
+  builds["builds"] = pageList
+  b, err := yaml.Marshal(builds)
   btu.CheckError(err)
   path := filepath.Join(PER_PAGE_DIR, "builds" + YAML_SUFFIX)
   err = os.WriteFile(path, b, 0644)

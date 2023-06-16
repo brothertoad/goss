@@ -39,8 +39,9 @@ type PageDataType struct {
   PreviousUrl string `yaml:"previousUrl"`
   NextUrl string `yaml:"nextUrl"`
   Key int `yaml:"key"`
+  Url string `yaml:"url"`
+  Draft bool `yaml:"draft"`
   // These fields are not needed outside of this app.
-  url string
   dataRelativePath string
 }
 
@@ -69,7 +70,7 @@ func main() {
       kit := kitMap[kitKey]
       // fmt.Printf("Walking %s, relativePath is %s, dataRelativePath is %s, kit is %+v\n", path, relativePath, dataRelativePath, kit)
       pageData := createPageData(kit, relativePath)
-      pageData.url = "/" + base + "/"
+      pageData.Url = "/" + base + "/"
       pageData.dataRelativePath = dataRelativePath
       pageList = append(pageList, pageData)
     }
@@ -82,30 +83,14 @@ func main() {
   }
 }
 
-/*
-func sortPageList() {
-  // Per https://yourbasic.org/golang/how-to-sort-in-go/#bonus-sort-a-map-by-key-or-value
-  n := len(pageMap)
-  keys := make([]int, 0, n)
-  for k := range(pageMap) {
-    keys = append(keys, k)
-  }
-  sort.Ints(keys)
-  pageList = make([]PageDataType, 0, n)
-  for _, v := range(keys) {
-    pageList = append(pageList, pageMap[v])
-  }
-}
-*/
-
 func addPreviousNext() {
   n := len(pageList)
-  pageList[0].NextUrl = pageList[1].url
-  pageList[n-1].PreviousUrl = pageList[n-2].url
+  pageList[0].NextUrl = pageList[1].Url
+  pageList[n-1].PreviousUrl = pageList[n-2].Url
   // Now do the ones in between.
   for j := 1; j < (n -1); j++ {
-    pageList[j].NextUrl = pageList[j+1].url
-    pageList[j].PreviousUrl = pageList[j-1].url
+    pageList[j].NextUrl = pageList[j+1].Url
+    pageList[j].PreviousUrl = pageList[j-1].Url
   }
 }
 

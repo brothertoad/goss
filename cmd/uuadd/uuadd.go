@@ -40,8 +40,10 @@ type PageDataType struct {
   NextUrl string `yaml:"nextUrl"`
   Key int `yaml:"key"`
   Url string `yaml:"url"`
+  Name string `yaml:"name"`
   Scale string `yaml:"scale"`
   Brand string `yaml:"brand"`
+  Number string `yaml:"number"`
   Draft bool `yaml:"draft"`
   // These fields are not needed outside of this app.
   dataRelativePath string
@@ -75,7 +77,9 @@ func main() {
       if draft := fm["draft"]; draft != nil {
         pageData.Draft = fm["draft"].(bool)
       }
-      pageData.Url = "/" + base + "/"
+      if !pageData.Draft {
+        pageData.Url = "/" + base + "/"
+      }
       pageData.dataRelativePath = dataRelativePath
       pageList = append(pageList, pageData)
     }
@@ -103,7 +107,9 @@ func addPreviousNext() {
 func createPageData(kit KitType, relativePath string) PageDataType {
   var pageData PageDataType
   pageData.Title = kit.name
+  pageData.Name = kit.name
   pageData.Brand = kit.brand
+  pageData.Number = kit.number
   if kit.scale != "" {
     pageData.Scale = kit.scale
   } else {

@@ -41,6 +41,7 @@ type PageDataType struct {
   Key int `yaml:"key"`
   Url string `yaml:"url"`
   Name string `yaml:"name"`
+  Date string `yaml:"date"`
   Scale string `yaml:"scale"`
   Brand string `yaml:"brand"`
   Number string `yaml:"number"`
@@ -121,12 +122,15 @@ func createPageData(kit KitType, relativePath string) PageDataType {
   if kit.scalematesId != "" {
     pageData.ScalematesUrl = "http://www.scalemates.com/kits/" + kit.scalematesId
   }
-  key, err := strconv.Atoi(relativePath[7:11] + relativePath[12:16])
+  yearAsString := relativePath[7:11]
+  key, err := strconv.Atoi(yearAsString + relativePath[12:16])
   btu.CheckError(err)
   pageData.Key = key
-  month, err := strconv.Atoi(relativePath[12:14])
+  monthAsString := relativePath[12:14]
+  month, err := strconv.Atoi(monthAsString)
   btu.CheckError(err)
-  pageData.CompletionDate = time.Month(month).String() + ", " + relativePath[7:11]
+  pageData.CompletionDate = time.Month(month).String() + ", " + yearAsString
+  pageData.Date = monthAsString + "/" + yearAsString
   return pageData
 }
 

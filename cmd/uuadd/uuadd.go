@@ -107,7 +107,8 @@ func addPreviousNext() {
 
 func createPageData(kit KitType, relativePath string) PageDataType {
   var pageData PageDataType
-  pageData.Title = kit.name
+  // Maybe use Sprintf for this...
+  pageData.Title = kit.brand + " " + kit.scale + " " + kit.name + " (" + kit.number + ")"
   pageData.Name = kit.name
   pageData.Brand = kit.brand
   pageData.Number = kit.number

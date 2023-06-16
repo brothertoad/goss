@@ -2,10 +2,11 @@ package main
 
 import (
   "bytes"
-  "fmt"
+  _ "fmt"
   "io/ioutil"
   "os"
   "path/filepath"
+  "sort"
   "strconv"
   "strings"
   "time"
@@ -19,7 +20,7 @@ const DATA_DIR = "data"
 const PAGES_DIR = "pages"
 const SRC_DIR = "pages/models"
 const J2_SUFFIX = "html.j2"
-const YAML_SUFFIX = "yaml"
+const YAML_SUFFIX = ".yaml"
 const PER_PAGE_DIR = "perPage"
 
 type KitType struct {
@@ -39,6 +40,9 @@ type PageDataType struct {
   PreviousUrl string `yaml:"previousUrl"`
   NextUrl string `yaml:"nextUrl"`
   Key int `yaml:"key"`
+  // These fields are not needed outside of this app.
+  url string
+  dataRelativePath string
 }
 
 // Keys for KitType
@@ -51,23 +55,60 @@ const KIT_KEY_NUMBER = "number"
 
 var globalData map[string]interface{}
 var kitMap map[string]KitType
+var pageMap map[int]PageDataType
 
 func main() {
   globalData = gossutil.LoadGlobalData(DATA_DIR)
   kitMap = createKitMap(globalData["kits"].(map[string]interface{}))
+  pageMap = make(map[int]PageDataType)
   _ = filepath.Walk(SRC_DIR, func(path string, info os.FileInfo, err error) error {
     if strings.HasSuffix(path, J2_SUFFIX) {
       relativePath := path[(len(PAGES_DIR) + 1):]
-      dataRelativePath := filepath.Join(PER_PAGE_DIR, (strings.TrimSuffix(relativePath, J2_SUFFIX) + YAML_SUFFIX))
+      base := strings.TrimSuffix(relativePath, "." + J2_SUFFIX)
+      dataRelativePath := filepath.Join(PER_PAGE_DIR, base + YAML_SUFFIX)
       kitKey := getKitKey(path)
       kit := kitMap[kitKey]
-      fmt.Printf("Walking %s, relativePath is %s, dataRelativePath is %s, kit is %+v\n", path, relativePath, dataRelativePath, kit)
+      // fmt.Printf("Walking %s, relativePath is %s, dataRelativePath is %s, kit is %+v\n", path, relativePath, dataRelativePath, kit)
       pageData := createPageData(kit, relativePath)
-      fmt.Printf("pageData is %+v\n", pageData)
-      writePageData(dataRelativePath, pageData)
+      pageData.url = "/" + base + "/"
+      pageData.dataRelativePath = dataRelativePath
+      pageMap[pageData.Key] = pageData
     }
     return nil
   })
+  addPreviousNext()
+  for _, pageData := range(pageMap) {
+    writePageData(pageData)
+  }
+}
+
+func addPreviousNext() {
+  // Per https://yourbasic.org/golang/how-to-sort-in-go/#bonus-sort-a-map-by-key-or-value
+  n := len(pageMap)
+  keys := make([]int, 0, n)
+  for k := range(pageMap) {
+    keys = append(keys, k)
+  }
+  sort.Ints(keys)
+  // Add next to the first page, and previous to the last manually.
+  // Have to assign to a copy of the struct, due to Golang.
+  // See https://stackoverflow.com/questions/42605337/cannot-assign-to-struct-field-in-a-map
+  if entry, ok := pageMap[keys[0]]; ok {
+    entry.NextUrl = pageMap[keys[1]].url
+    pageMap[keys[0]] = entry
+  }
+  if entry, ok := pageMap[keys[n-1]]; ok {
+    entry.PreviousUrl = pageMap[keys[n-2]].url
+    pageMap[keys[n-1]] = entry
+  }
+  // Now do the ones in between.
+  for j := 1; j < (n -1); j++ {
+    if entry, ok := pageMap[keys[j]]; ok {
+      entry.NextUrl = pageMap[keys[j+1]].url
+      entry.PreviousUrl = pageMap[keys[j-1]].url
+      pageMap[keys[j]] = entry
+    }
+  }
 }
 
 func createPageData(kit KitType, relativePath string) PageDataType {
@@ -88,11 +129,11 @@ func createPageData(kit KitType, relativePath string) PageDataType {
   return pageData
 }
 
-func writePageData(path string, pageData PageDataType) {
+func writePageData(pageData PageDataType) {
   b, err := yaml.Marshal(pageData)
   btu.CheckError(err)
-  btu.CreateDirForFile(path)
-  err = os.WriteFile(path, b, 0644)
+  btu.CreateDirForFile(pageData.dataRelativePath)
+  err = os.WriteFile(pageData.dataRelativePath, b, 0644)
   btu.CheckError(err)
 }
 

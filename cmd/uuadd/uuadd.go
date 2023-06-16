@@ -2,7 +2,6 @@ package main
 
 import (
   "bytes"
-  _ "fmt"
   "io/ioutil"
   "os"
   "path/filepath"

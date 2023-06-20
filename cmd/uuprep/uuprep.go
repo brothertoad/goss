@@ -94,13 +94,15 @@ func main() {
 }
 
 func addPreviousNext() {
+  // Note that the pages are listed newest first, so entry 0 in the list
+  // has only a previous, and the last entry has only a next.
   n := len(pageList)
-  pageList[0].NextUrl = pageList[1].Url
-  pageList[n-1].PreviousUrl = pageList[n-2].Url
+  pageList[0].PreviousUrl = pageList[1].Url
+  pageList[n-1].NextUrl = pageList[n-2].Url
   // Now do the ones in between.
   for j := 1; j < (n -1); j++ {
-    pageList[j].NextUrl = pageList[j+1].Url
-    pageList[j].PreviousUrl = pageList[j-1].Url
+    pageList[j].PreviousUrl = pageList[j+1].Url
+    pageList[j].NextUrl = pageList[j-1].Url
   }
 }
 

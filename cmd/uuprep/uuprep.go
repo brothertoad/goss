@@ -5,7 +5,6 @@ import (
   "io/ioutil"
   "os"
   "path/filepath"
-  "strconv"
   "strings"
   "time"
   "github.com/adrg/frontmatter"
@@ -125,12 +124,10 @@ func createPageData(kit KitType, relativePath string) PageDataType {
     pageData.ScalematesUrl = "http://www.scalemates.com/kits/" + kit.scalematesId
   }
   yearAsString := relativePath[7:11]
-  key, err := strconv.Atoi(yearAsString + relativePath[12:16])
-  btu.CheckError(err)
+  key := btu.Atoi(yearAsString + relativePath[12:16])
   pageData.Key = key
   monthAsString := relativePath[12:14]
-  month, err := strconv.Atoi(monthAsString)
-  btu.CheckError(err)
+  month := btu.Atoi(monthAsString)
   pageData.CompletionDate = time.Month(month).String() + ", " + yearAsString
   pageData.Date = monthAsString + "/" + yearAsString
   return pageData

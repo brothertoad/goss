@@ -17,6 +17,7 @@ type pageInfo struct {
   outputPath string
   dataPath string
   perPageDataPath string
+  canonicalPath string
 }
 
 // Default format for page modification date.
@@ -25,6 +26,7 @@ const TEXTDATE = "January 2, 2006"
 // key for page-specific properties
 const DATE_MODIFIED_KEY = "modTime"
 const PATH_KEY = "path"
+const CANONICAL_PATH_KEY = "canonical"
 
 var numPageDirParts int
 
@@ -65,6 +67,7 @@ func processPages(pageDir string, outputDir string, globalData map[string]interf
 
     // Add other generic page-specific properties.
     pageData[PATH_KEY] = strings.TrimPrefix(path, config.PageDir)[1:]
+    pageData[CANONICAL_PATH_KEY] = info.canonicalPath
 
     tpl := gonja.Must(gonja.FromBytes(rest))
     out, err := tpl.Execute(pageData)
@@ -124,8 +127,20 @@ func buildPageInfo(path string, outputDir string, fileInfo fs.FileInfo) pageInfo
   if config.PerPageDataDir != "" {
     info.perPageDataPath = filepath.Join(config.PerPageDataDir, strings.TrimSuffix(relativePath, suffix) + ".yaml")
   }
-  btu.Log(10, "path is %s, relativePath is %s, dataPath is %s, perPageDataPath is %s\n", path, relativePath, info.dataPath, info.perPageDataPath)
+  info.canonicalPath = getCanonicalPath(strings.TrimPrefix(outputPath, outputDir))
+  btu.Log(10, "path is %s, relativePath is %s, outputPath is %s, dataPath is %s, perPageDataPath is %s\n", path, relativePath,
+    info.outputPath, info.dataPath, info.perPageDataPath)
   return info
+}
+
+func getCanonicalPath(path string) string {
+  canonical := path  // default
+  // Remove a index.html suffix if it exists, but keep the trailing slash.
+  if strings.HasSuffix(path, "/index.html") {
+    canonical = path[0:(len(path)-10)]
+  }
+  btu.Log(8, "path is %s, canonical path is %s\n", path, canonical)
+  return canonical
 }
 
 func getSuffix(base string) string {

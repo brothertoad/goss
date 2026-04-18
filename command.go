@@ -29,10 +29,10 @@ func executeCommand(cmd interface{}) {
   }
   if exe != "" {
     _, err := exec.LookPath(exe)
-    btu.CheckError(err)
+    btu.CheckError2(err, "Can't find '%s' on path", exe)
     command := exec.Command(exe, args...)
     command.Stdout = os.Stdout
     err = command.Run()
-    btu.CheckError(err)
+    btu.CheckError2(err, "Failed to execute command '%s'", exe)
   }
 }
